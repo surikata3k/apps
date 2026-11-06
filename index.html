@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The periodic table of apps · Surikata3K</title>
-<meta name="description" content="Nine free web apps that run entirely in your browser, laid out like a periodic table: password tools, cryptography and blockchain simulators, and classroom helpers.">
+<title>Apps · Surikata3K</title>
+<meta name="description" content="Free web apps that run entirely in your browser: password tools, cryptography and blockchain simulators, and classroom helpers.">
 <link rel="canonical" href="https://apps.surikata3k.com/">
 <meta name="theme-color" content="#FBFBF9">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Surikata3K">
 <meta property="og:locale" content="en_GB">
-<meta property="og:title" content="The periodic table of apps · Surikata3K">
+<meta property="og:title" content="Surikata3K apps">
 <meta property="og:description" content="Passwords, cryptography, blockchain and classroom tools. Nothing to install, no server and your data never leaves your device.">
 <meta property="og:url" content="https://apps.surikata3k.com/">
 <meta property="og:image" content="https://apps.surikata3k.com/img/og-image.png">
@@ -25,147 +25,26 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "@id": "https://apps.surikata3k.com/#page", "url": "https://apps.surikata3k.com/", "name": "The periodic table of apps", "description": "Free web apps that run entirely in your browser.", "inLanguage": "en", "isPartOf": {"@id": "https://surikata3k.com/#website"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/", "email": "mailto:hello@surikata3k.com"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en", "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learning outcome hours planner", "url": "https://apps.surikata3k.com/learning-outcome-hours/"}, {"@type": "ListItem", "position": 2, "name": "Dits Màgics", "url": "https://surikata3k.com/ditsmagics/en/"}, {"@type": "ListItem", "position": 3, "name": "PassForge", "url": "https://apps.surikata3k.com/passforge/"}, {"@type": "ListItem", "position": 4, "name": "Password generator", "url": "https://apps.surikata3k.com/password-generator/"}, {"@type": "ListItem", "position": 5, "name": "Password strength checker", "url": "https://apps.surikata3k.com/password-strength-checker/"}, {"@type": "ListItem", "position": 6, "name": "Entropy calculator", "url": "https://apps.surikata3k.com/password-entropy-calculator/"}, {"@type": "ListItem", "position": 7, "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/"}, {"@type": "ListItem", "position": 8, "name": "The maths of RSA", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html"}, {"@type": "ListItem", "position": 9, "name": "Blockchain simulator", "url": "https://apps.surikata3k.com/blockchain-simulator/"}]}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "@id": "https://apps.surikata3k.com/#page", "url": "https://apps.surikata3k.com/", "name": "Surikata3K apps", "description": "Free web apps that run entirely in your browser.", "inLanguage": "en", "isPartOf": {"@id": "https://surikata3k.com/#website"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/", "email": "mailto:hello@surikata3k.com"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en", "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learning outcome hours planner", "url": "https://apps.surikata3k.com/learning-outcome-hours/"}, {"@type": "ListItem", "position": 2, "name": "Dits Màgics", "url": "https://surikata3k.com/ditsmagics/en/"}, {"@type": "ListItem", "position": 3, "name": "PassForge", "url": "https://apps.surikata3k.com/passforge/"}, {"@type": "ListItem", "position": 4, "name": "Password generator", "url": "https://apps.surikata3k.com/password-generator/"}, {"@type": "ListItem", "position": 5, "name": "Password strength checker", "url": "https://apps.surikata3k.com/password-strength-checker/"}, {"@type": "ListItem", "position": 6, "name": "Entropy calculator", "url": "https://apps.surikata3k.com/password-entropy-calculator/"}, {"@type": "ListItem", "position": 7, "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/"}, {"@type": "ListItem", "position": 8, "name": "The maths of RSA", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html"}, {"@type": "ListItem", "position": 9, "name": "Blockchain simulator", "url": "https://apps.surikata3k.com/blockchain-simulator/"}]}}]}</script>
 <style>
-  :root {
-    --bg: #FBFBF9;
-    --paper: #FFFFFF;
-    --ink: #111111;
-    --muted: #555550;
-    --text-2: #45453F;
-    --rule: #D9D8D2;
-    --grid: rgba(17,17,17,.045);
-    --accent: #B23A0A;
-    --serif: 'Instrument Serif', Georgia, serif;
-    --sans: 'IBM Plex Sans', system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, monospace;
-    /* one colour per group */
-    --g1: #2F6B4F; --g1-bg: #EAF2EC;   /* classroom */
-    --g2: #B23A0A; --g2-bg: #FBF1EC;   /* passwords */
-    --g3: #24507A; --g3-bg: #EAF0F6;   /* cryptography */
-  }
+  :root { --bg: #FBFBF9; --ink: #111111; --muted: #555550; --rule: #D9D8D2; --accent: #B23A0A;
+          --serif: 'Instrument Serif', Georgia, serif; --sans: 'IBM Plex Sans', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-    background-color: var(--bg);
-    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
-  a { color: inherit; }
-  .page { max-width: 72rem; margin: 0 auto; padding: 0 16px; }
-  @media (min-width: 640px) { .page { padding: 0 24px; } }
-  @media (min-width: 1024px) { .page { padding: 0 32px; } }
-
-  /* ---------- Intro ---------- */
-  .intro { display: grid; gap: 24px 48px; padding: 48px 0 32px; align-items: end; }
-  @media (min-width: 900px) { .intro { grid-template-columns: 1.3fr 1fr; padding: 72px 0 40px; } }
-  .kicker { margin: 0 0 14px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
-  .kicker b { color: var(--accent); font-weight: 500; }
-  h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 7vw, 92px); line-height: .95; letter-spacing: -0.02em; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  main { max-width: 760px; margin: 0 auto; padding: 64px 20px 8px; }
+  h1 { margin: 0 0 12px; font: 400 clamp(44px, 8vw, 72px)/1 var(--serif); letter-spacing: -0.02em; }
   h1 em { color: var(--accent); }
-  .lede { margin: 0 0 18px; color: var(--text-2); font-size: 17px; max-width: 460px; }
-
-  .search { position: relative; max-width: 460px; }
-  .search input {
-    width: 100%; font: 500 15px var(--mono); color: var(--ink);
-    background: var(--paper); border: 1.5px solid var(--ink); border-radius: 4px;
-    padding: 13px 48px 13px 44px; outline: none; box-shadow: 4px 4px 0 var(--ink);
-    transition: box-shadow .15s, transform .15s;
-  }
-  .search input:focus { box-shadow: 2px 2px 0 var(--accent); border-color: var(--accent); transform: translate(2px, 2px); }
-  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
-  .search kbd { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font: 12px var(--mono); color: var(--muted); border: 1px solid var(--rule); border-radius: 3px; padding: 1px 7px; background: var(--bg); }
-  .search input:focus ~ kbd { display: none; }
-  @media (hover: none) { .search kbd { display: none; } .search input { padding-right: 16px; } }
-
-  /* ---------- Legend ---------- */
-  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none; }
-  .legend button {
-    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-    font: 13px var(--mono); color: var(--ink); background: var(--paper);
-    border: 1px solid var(--rule); border-radius: 999px; padding: 6px 14px;
-  }
-  .legend button i { width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
-  .legend button:hover { border-color: var(--ink); }
-  .legend button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .legend button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .count { margin-left: auto; align-self: center; font: 13px var(--mono); color: var(--muted); }
-
-  /* ---------- Table + panel ---------- */
-  .lab { display: grid; gap: 24px; padding-bottom: 56px; }
-  @media (min-width: 960px) { .lab { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; } }
-
-  .table { display: grid; gap: 14px; }
-  .period { display: grid; grid-template-columns: 1fr; gap: 8px; }
-  @media (min-width: 640px) { .period { grid-template-columns: 112px 1fr; align-items: stretch; gap: 12px; } }
-  .period-label { font: 12px/1.35 var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: baseline; }
-  @media (min-width: 640px) { .period-label { flex-direction: column; gap: 2px; padding-top: 8px; border-top: 2px solid var(--c); } }
-  .period-label b { font: 400 22px var(--serif); color: var(--c); }
-  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  @media (min-width: 520px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-  .el {
-    position: relative; display: flex; flex-direction: column; height: 100%; min-height: 132px;
-    padding: 10px 12px 12px; text-decoration: none; color: var(--ink);
-    background: var(--bg-c); border: 1.5px solid var(--c); border-radius: 4px;
-    transition: transform .12s, box-shadow .12s, opacity .2s, filter .2s;
-  }
-  .el .num { font: 500 12px var(--mono); color: var(--c); }
-  .el .tag { position: absolute; top: 10px; right: 12px; font: 11px var(--mono); color: var(--muted); }
-  .el .sym { margin: 6px 0 2px; font: 400 clamp(40px, 5vw, 52px)/1 var(--serif); letter-spacing: -0.02em; }
-  .el .name { margin-top: auto; font-size: 13px; line-height: 1.25; font-weight: 500; }
-  .el:hover, .el.is-active { transform: translate(-3px, -3px); box-shadow: 3px 3px 0 var(--c); }
-  .el.is-active { background: var(--paper); }
-  .el:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-  .el.is-dim { opacity: .25; filter: grayscale(1); }
-  .el.is-dim:hover { opacity: .6; }
-  [data-g="1"] { --c: var(--g1); --bg-c: var(--g1-bg); }
-  [data-g="2"] { --c: var(--g2); --bg-c: var(--g2-bg); }
-  [data-g="3"] { --c: var(--g3); --bg-c: var(--g3-bg); }
-
-  .empty { display: none; margin: 4px 0 0; font: 14px var(--mono); color: var(--muted); }
-  .empty.show { display: block; }
-
-  /* Detail card, like the big square in a periodic-table key */
-  .panel {
-    position: sticky; top: 20px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 4px;
-    box-shadow: 6px 6px 0 var(--c, var(--ink)); padding: 20px; display: flex; flex-direction: column; gap: 14px;
-    transition: box-shadow .2s;
-  }
-  .panel-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  .panel .big { font: 400 88px/0.9 var(--serif); letter-spacing: -0.03em; color: var(--c); }
-  .panel .meta { text-align: right; font: 12px/1.6 var(--mono); color: var(--muted); }
-  .panel .meta b { display: block; color: var(--ink); font-weight: 500; font-size: 13px; }
-  .panel h2 { margin: 0; font: 400 32px/1.05 var(--serif); }
-  .panel p { margin: 0; color: var(--text-2); }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-  .chips li { font: 12px var(--mono); padding: 3px 9px; border: 1px solid var(--rule); border-radius: 999px; background: var(--bg); }
-  .panel dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 14px; }
-  .panel dt { font: 12px/1.9 var(--mono); color: var(--muted); }
-  .panel dd { margin: 0; }
-  .open {
-    display: flex; justify-content: space-between; align-items: center; margin-top: 4px;
-    padding: 12px 16px; background: var(--ink); color: var(--bg); text-decoration: none;
-    font: 500 14px var(--mono); border-radius: 4px; transition: background .15s;
-  }
-  .open:hover { background: var(--c); color: #fff; }
-  .open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .hint { font: 12px var(--mono); color: var(--muted); margin: 0; }
-
-  /* ---------- Properties ---------- */
-  .props { border-top: 1px solid var(--ink); padding: 28px 0 8px; display: grid; gap: 20px 40px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-  .prop .k { font: 12px var(--mono); color: var(--muted); }
-  .prop .v { font: 400 40px/1.05 var(--serif); margin: 2px 0 6px; }
-  .prop .v em { color: var(--accent); }
-  .prop p { margin: 0; font-size: 14px; color: var(--text-2); }
-  .prop p a { text-decoration: underline; }
-  .s3k-foot { margin-top: 56px; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .el, .panel, .search input { transition: none; }
-    .el:hover, .el.is-active { transform: none; }
-  }
+  .lede { margin: 0 0 48px; color: var(--muted); max-width: 520px; }
+  h2 { margin: 40px 0 0; padding-bottom: 8px; font: 400 13px var(--mono); color: var(--muted); border-bottom: 1px solid var(--ink); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li a { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 16px 0; border-bottom: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+  .n { font: 400 26px/1.15 var(--serif); }
+  .d { grid-column: 1; color: var(--muted); font-size: 15px; }
+  .a { grid-column: 2; grid-row: 1 / span 2; align-self: center; font: 20px var(--mono); color: var(--accent); transition: transform .15s; }
+  li a:hover .n { color: var(--accent); }
+  li a:hover .a { transform: translateX(4px); }
+  li a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) { .a { transition: none; } }
 </style>
 </head>
 <body>
@@ -183,85 +62,27 @@
   </div>
 </header>
 
-<main class="page">
-  <section class="intro">
-    <div>
-      <p class="kicker">apps.surikata3k.com · <b>9 elements</b> · 3 groups</p>
-      <h1>The periodic table <em>of apps</em>.</h1>
-    </div>
-    <div>
-      <p class="lede">Small, stable tools for passwords, cryptography and the classroom. Each one runs in your browser: no account, nothing to install, nothing sent anywhere.</p>
-      <div class="search" role="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Find an element: rsa, hash, teacher…" aria-label="Search the apps" autocomplete="off" spellcheck="false">
-        <kbd aria-hidden="true">/</kbd>
-      </div>
-    </div>
-  </section>
-
-  <ul class="legend" aria-label="Filter by group">
-    <li><button type="button" data-filter="1" aria-pressed="false" style="--c:var(--g1)"><i></i>classroom</button></li>
-    <li><button type="button" data-filter="2" aria-pressed="false" style="--c:var(--g2)"><i></i>passwords</button></li>
-    <li><button type="button" data-filter="3" aria-pressed="false" style="--c:var(--g3)"><i></i>cryptography</button></li>
-    <li class="count" id="count" aria-live="polite">9 of 9</li>
-  </ul>
-
-  <div class="lab">
-    <div class="table" id="table">
-
-      <section class="period" data-g="1" aria-labelledby="p1">
-        <div class="period-label" id="p1"><b>I</b> classroom</div>
-        <ul class="tiles">
-          <li><a class="el" data-g="1" data-id="lo" href="/learning-outcome-hours/"><span class="num">01</span><span class="tag">calendar</span><span class="sym" aria-hidden="true">Lo</span><span class="name">Learning outcome hours</span></a></li>
-          <li><a class="el" data-g="1" data-id="dm" href="https://surikata3k.com/ditsmagics/en/"><span class="num">02</span><span class="tag">kids</span><span class="sym" aria-hidden="true">Dm</span><span class="name">Dits Màgics</span></a></li>
-        </ul>
-      </section>
-
-      <section class="period" data-g="2" aria-labelledby="p2">
-        <div class="period-label" id="p2"><b>II</b> passwords</div>
-        <ul class="tiles">
-          <li><a class="el" data-g="2" data-id="pf" href="/passforge/"><span class="num">03</span><span class="tag">pbkdf2</span><span class="sym" aria-hidden="true">Pf</span><span class="name">PassForge</span></a></li>
-          <li><a class="el" data-g="2" data-id="pg" href="/password-generator/"><span class="num">04</span><span class="tag">random</span><span class="sym" aria-hidden="true">Pg</span><span class="name">Password generator</span></a></li>
-          <li><a class="el" data-g="2" data-id="ps" href="/password-strength-checker/"><span class="num">05</span><span class="tag">audit</span><span class="sym" aria-hidden="true">Ps</span><span class="name">Strength checker</span></a></li>
-          <li><a class="el" data-g="2" data-id="en" href="/password-entropy-calculator/"><span class="num">06</span><span class="tag">bits</span><span class="sym" aria-hidden="true">En</span><span class="name">Entropy calculator</span></a></li>
-        </ul>
-      </section>
-
-      <section class="period" data-g="3" aria-labelledby="p3">
-        <div class="period-label" id="p3"><b>III</b> cryptography</div>
-        <ul class="tiles">
-          <li><a class="el" data-g="3" data-id="ak" href="/asymmetric-key-simulator/"><span class="num">07</span><span class="tag">keys</span><span class="sym" aria-hidden="true">Ak</span><span class="name">Asymmetric key simulator</span></a></li>
-          <li><a class="el" data-g="3" data-id="rs" href="/asymmetric-key-simulator/rsa-math.html"><span class="num">08</span><span class="tag">maths</span><span class="sym" aria-hidden="true">Rs</span><span class="name">The maths of RSA</span></a></li>
-          <li><a class="el" data-g="3" data-id="bc" href="/blockchain-simulator/"><span class="num">09</span><span class="tag">sha-256</span><span class="sym" aria-hidden="true">Bc</span><span class="name">Blockchain simulator</span></a></li>
-        </ul>
-      </section>
-
-      <p class="empty" id="empty">No element matches. Try “password”, “keys” or “class”.</p>
-    </div>
-
-    <aside class="panel" id="panel" aria-live="polite" aria-label="Selected app">
-      <div class="panel-top">
-        <span class="big" id="d-sym">Pf</span>
-        <div class="meta"><b id="d-num">03</b><span id="d-group">passwords</span><br><span id="d-level">all levels</span></div>
-      </div>
-      <h2 id="d-name">PassForge</h2>
-      <p id="d-desc">A different password for every site from a single master key, without storing anything.</p>
-      <ul class="chips" id="d-chips"></ul>
-      <dl>
-        <dt>for</dt><dd id="d-for">anyone with too many accounts</dd>
-        <dt>time</dt><dd id="d-time">1 minute</dd>
-      </dl>
-      <a class="open" id="d-open" href="/passforge/"><span>Open the app</span><span aria-hidden="true">→</span></a>
-      <p class="hint" id="hint">Hover or tap an element to inspect it. Tap again to open it.</p>
-    </aside>
-  </div>
-
-  <section class="props" aria-label="What every app has in common">
-    <div class="prop"><div class="k">state</div><div class="v">Client-side <em>only</em></div><p>All the work happens in your browser with JavaScript and the Web Crypto API.</p></div>
-    <div class="prop"><div class="k">half-life of your data</div><div class="v">0 <em>s</em> on our side</div><p>Nothing is uploaded, logged or stored on a server. Close the tab and it's gone.</p></div>
-    <div class="prop"><div class="k">origin</div><div class="v">Made in <em>class</em></div><p>Built while teaching systems administration and cybersecurity, each with a short explanation and FAQ.</p></div>
-    <div class="prop"><div class="k">licence</div><div class="v">CC <em>BY-NC-SA</em></div><p>Share and adapt for non-commercial use, with credit. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p></div>
-  </section>
+<main>
+  <h1>Apps, <em>in your browser</em>.</h1>
+  <p class="lede">Small free tools. Nothing to install, no account, and nothing you type leaves your device.</p>
+    <h2>classroom</h2>
+    <ul>
+      <li><a href="/learning-outcome-hours/"><span class="n">Learning outcome hours planner</span><span class="d">Spread each learning outcome’s hours across the school calendar.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="https://surikata3k.com/ditsmagics/en/"><span class="n">Dits Màgics</span><span class="d">Touch typing for kids in English, Catalan and Spanish.</span><span class="a" aria-hidden="true">→</span></a></li>
+    </ul>
+    <h2>passwords</h2>
+    <ul>
+      <li><a href="/passforge/"><span class="n">PassForge</span><span class="d">A different password for every site from one master key.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="/password-generator/"><span class="n">Password generator</span><span class="d">Strong random passwords, your length and characters.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="/password-strength-checker/"><span class="n">Password strength checker</span><span class="d">How strong a password is and how long it would take to crack.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="/password-entropy-calculator/"><span class="n">Entropy calculator</span><span class="d">Combinations, bits of entropy and brute-force time.</span><span class="a" aria-hidden="true">→</span></a></li>
+    </ul>
+    <h2>cryptography</h2>
+    <ul>
+      <li><a href="/asymmetric-key-simulator/"><span class="n">Asymmetric key simulator</span><span class="d">Padlocks and keys to learn public-key cryptography.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="/asymmetric-key-simulator/rsa-math.html"><span class="n">The maths of RSA</span><span class="d">Keys, encryption and signatures, step by step.</span><span class="a" aria-hidden="true">→</span></a></li>
+      <li><a href="/blockchain-simulator/"><span class="n">Blockchain simulator</span><span class="d">Hash, mine and break a chain of blocks.</span><span class="a" aria-hidden="true">→</span></a></li>
+    </ul>
 </main>
 
 <footer class="s3k-foot">
@@ -273,91 +94,5 @@
     <p class="s3k-legal">© 2026 Surikata3K · <a href="https://surikata3k.com/">surikata3k.com</a><br>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
   </div>
 </footer>
-
-<script>
-const APPS = {
-  lo: { name: 'Learning outcome hours planner', group: 'classroom', level: 'teachers', desc: 'Spread the hours of each learning outcome across the school calendar, taking holidays and the weekly timetable into account.', chips: ['calendar', 'CSV export', 'FP / VET'], for: 'teachers planning a module', time: '5 minutes', keys: 'teacher school calendar hours ra lo planner timetable fp' },
-  dm: { group: 'classroom', level: 'ages 6+', desc: 'Touch typing for kids in English, Catalan and Spanish, with 44 levels and stars to earn.', chips: ['typing', '3 languages', '44 levels'], for: 'children learning to type', time: '10 minutes a day', keys: 'kids children typing keyboard catalan spanish game' },
-  pf: { group: 'passwords', level: 'all levels', desc: 'A different password for every site from a single master key, without storing anything.', chips: ['PBKDF2', 'HMAC-SHA256', 'deterministic'], for: 'anyone with too many accounts', time: '1 minute', keys: 'password master key deterministic pbkdf2 hmac manager' },
-  pg: { group: 'passwords', level: 'all levels', desc: 'Strong random passwords with the length and characters you choose.', chips: ['crypto.getRandomValues', 'no look-alikes'], for: 'creating a new account', time: '10 seconds', keys: 'password random generator strong' },
-  ps: { name: 'Password strength checker', group: 'passwords', level: 'all levels', desc: 'See how strong a password is, which weak patterns it has and how long it would take to crack.', chips: ['patterns', 'entropy', 'brute force'], for: 'checking the passwords you use', time: '1 minute', keys: 'password strength checker weak audit crack' },
-  en: { group: 'passwords', level: 'secondary / FP', desc: 'Possible combinations, entropy in bits and brute-force time by length and character set.', chips: ['combinatorics', 'bits', 'attack speed'], for: 'understanding why length matters', time: '5 minutes', keys: 'password entropy bits maths combinations brute force' },
-  ak: { group: 'cryptography', level: 'secondary / FP', desc: 'Padlocks, keys and seals: learn how public-key cryptography works by playing four short scenes and a final challenge.', chips: ['public key', 'signatures', 'man in the middle'], for: 'a first lesson on asymmetric crypto', time: '15 minutes', keys: 'keys asymmetric public private padlock signature crypto' },
-  rs: { group: 'cryptography', level: 'FP / university', desc: 'Generate a key pair, encrypt, sign and try to break it, step by step and with small numbers.', chips: ['primes', 'modular arithmetic', 'factoring'], for: 'going from the idea to the maths', time: '20 minutes', keys: 'rsa maths math primes modular encrypt sign factor crypto' },
-  bc: { group: 'cryptography', level: 'secondary / FP', desc: 'Hashing, blocks, mining and a distributed chain: tamper with a block and watch the chain break.', chips: ['SHA-256', 'proof of work', 'nodes'], for: 'demystifying blockchain', time: '15 minutes', keys: 'blockchain hash sha-256 mining chain nonce bitcoin tokens' },
-};
-const $ = s => document.querySelector(s);
-const tiles = [...document.querySelectorAll('.el')];
-const panel = $('#panel');
-const touch = matchMedia('(hover: none)').matches;
-let active = null, filter = null;
-
-function show(el) {
-  if (!el) return;
-  const id = el.dataset.id, a = APPS[id];
-  tiles.forEach(t => t.classList.toggle('is-active', t === el));
-  active = el;
-  panel.dataset.g = el.dataset.g;
-  panel.style.setProperty('--c', getComputedStyle(el).getPropertyValue('--c'));
-  $('#d-sym').textContent = el.querySelector('.sym').textContent;
-  $('#d-num').textContent = el.querySelector('.num').textContent;
-  $('#d-name').textContent = a.name || el.querySelector('.name').textContent;
-  $('#d-group').textContent = a.group;
-  $('#d-level').textContent = a.level;
-  $('#d-desc').textContent = a.desc;
-  $('#d-for').textContent = a.for;
-  $('#d-time').textContent = a.time;
-  $('#d-chips').replaceChildren(...a.chips.map(c => Object.assign(document.createElement('li'), { textContent: c })));
-  $('#d-open').href = el.getAttribute('href');
-}
-
-let tapType = 'mouse', wasActive = false;
-tiles.forEach(el => {
-  el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') show(el); });
-  el.addEventListener('pointerdown', e => { tapType = e.pointerType; wasActive = active === el; });
-  el.addEventListener('focus', () => show(el));
-  el.addEventListener('click', e => {
-    // On touch screens the first tap inspects the element, the second one opens it
-    if ((tapType === 'touch' || tapType === 'pen') && !wasActive) {
-      e.preventDefault(); show(el); wasActive = true;
-      if (innerWidth < 960) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    tapType = 'mouse';
-  });
-});
-
-function apply() {
-  const q = $('#q').value.trim().toLowerCase();
-  let n = 0, first = null;
-  tiles.forEach(el => {
-    const a = APPS[el.dataset.id];
-    const text = (el.textContent + ' ' + a.keys + ' ' + a.group + ' ' + a.chips.join(' ')).toLowerCase();
-    const ok = (!filter || el.dataset.g === filter) && (!q || q.split(/\s+/).every(w => text.includes(w)));
-    el.classList.toggle('is-dim', !ok);
-    el.tabIndex = ok ? 0 : -1;
-    if (ok) { n++; first = first || el; }
-  });
-  $('#count').textContent = n + ' of ' + tiles.length;
-  $('#empty').classList.toggle('show', n === 0);
-  if (first && (!active || active.classList.contains('is-dim'))) show(first);
-  return first;
-}
-
-$('#q').addEventListener('input', apply);
-$('#q').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { const f = apply(); if (f) location.href = f.href; }
-  if (e.key === 'Escape') { e.target.value = ''; apply(); e.target.blur(); }
-});
-document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => {
-  filter = filter === b.dataset.filter ? null : b.dataset.filter;
-  document.querySelectorAll('[data-filter]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.filter === filter)));
-  apply();
-}));
-document.addEventListener('keydown', e => {
-  if (e.key === '/' && document.activeElement !== $('#q')) { e.preventDefault(); $('#q').focus(); }
-});
-if (touch) $('#hint').textContent = 'Tap an element to inspect it, tap it again to open it.';
-show(document.querySelector('[data-id="pf"]'));
-</script>
 </body>
 </html>
