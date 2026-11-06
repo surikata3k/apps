@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apps · Surikata3K · Free web apps that run in your browser</title>
+<meta name="description" content="Free web apps that run entirely in your browser: password generator and checker, PassForge, entropy calculator, asymmetric key and blockchain simulators, the maths of RSA and a learning outcome hours planner.">
+<link rel="canonical" href="https://apps.surikata3k.com/">
+<meta name="theme-color" content="#FBFBF9">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Surikata3K">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Surikata3K apps · Small tools that run in your browser">
+<meta property="og:description" content="Passwords, cryptography, blockchain and classroom tools. Nothing to install, no server and your data never leaves your device.">
+<meta property="og:url" content="https://apps.surikata3k.com/">
+<meta property="og:image" content="https://apps.surikata3k.com/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Surikata3K apps">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "@id": "https://apps.surikata3k.com/#page", "url": "https://apps.surikata3k.com/", "name": "Surikata3K apps", "description": "Free web apps that run entirely in your browser.", "inLanguage": "en", "isPartOf": {"@id": "https://surikata3k.com/#website"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/", "email": "mailto:hello@surikata3k.com"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en", "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Dits Màgics", "url": "https://surikata3k.com/ditsmagics/en/"}, {"@type": "ListItem", "position": 2, "name": "Learning outcome hours planner", "url": "https://apps.surikata3k.com/learning-outcome-hours/"}, {"@type": "ListItem", "position": 3, "name": "PassForge", "url": "https://apps.surikata3k.com/passforge/"}, {"@type": "ListItem", "position": 4, "name": "Password generator", "url": "https://apps.surikata3k.com/password-generator/"}, {"@type": "ListItem", "position": 5, "name": "Password strength checker", "url": "https://apps.surikata3k.com/password-strength-checker/"}, {"@type": "ListItem", "position": 6, "name": "Entropy calculator", "url": "https://apps.surikata3k.com/password-entropy-calculator/"}, {"@type": "ListItem", "position": 7, "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/"}, {"@type": "ListItem", "position": 8, "name": "The maths of RSA", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html"}, {"@type": "ListItem", "position": 9, "name": "Blockchain simulator", "url": "https://apps.surikata3k.com/blockchain-simulator/"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Surikata3K", "item": "https://surikata3k.com/"}, {"@type": "ListItem", "position": 2, "name": "Apps", "item": "https://apps.surikata3k.com/"}]}]}</script>
+<style>
+  /* Same tokens and components as the surikata3k.com home page */
+  :root {
+    --bg: #FBFBF9;
+    --ink: #111111;
+    --muted: #555550;
+    --text-2: #45453F;
+    --rule: #D9D8D2;
+    --card: #FFFFFF;
+    --accent: #B23A0A;
+    --accent-soft: #FBF1EC;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ink); text-decoration: none; }
+  a:hover { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 64px); }
+  .label { margin: 0; font-family: var(--mono); font-weight: 400; font-size: 14px; color: var(--muted); text-transform: lowercase; }
+
+  /* Header */
+  .site-header {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 16px 32px; padding: 28px 0; border-bottom: 1px solid var(--ink);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 40px; height: 40px; object-fit: contain; }
+  .brand span { font-family: var(--serif); font-size: 34px; line-height: 1; letter-spacing: -0.01em; }
+  .brand em { color: var(--accent); }
+  .site-nav { display: flex; flex-wrap: wrap; gap: 4px 28px; font-family: var(--mono); font-size: 14px; }
+  .site-nav a { padding: 12px 0; }
+  .site-nav a[aria-current] { color: var(--accent); }
+
+  /* Hero */
+  .crumbs { margin: 28px 0 0; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .crumbs a { color: var(--muted); }
+  .crumbs a:hover { color: var(--accent); }
+  .hero { padding: 36px 0 60px; display: flex; flex-direction: column; gap: 32px; }
+  .hero h1 {
+    margin: 0; font-family: var(--serif); font-weight: 400;
+    font-size: clamp(48px, 8vw, 112px); line-height: 0.98; letter-spacing: -0.02em; max-width: 1050px;
+  }
+  .hero h1 em { color: var(--accent); }
+  .hero .intro { margin: 0; max-width: 680px; font-size: 19px; color: var(--text-2); }
+  .facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .facts li {
+    font-family: var(--mono); font-size: 13px; color: var(--ink);
+    border: 1px solid var(--rule); background: var(--card); border-radius: 999px; padding: 6px 14px;
+  }
+  .facts li::before { content: "● "; color: var(--accent); }
+
+  /* Index of groups */
+  .toc { display: flex; flex-wrap: wrap; gap: 4px 28px; font-family: var(--mono); font-size: 14px; }
+  .toc a { padding: 6px 0; border-bottom: 1px solid transparent; }
+  .toc a:hover { border-color: var(--accent); }
+
+  /* Sections */
+  .section { border-top: 1px solid var(--ink); padding: 32px 0 clamp(64px, 9vw, 112px); }
+  .card {
+    display: flex; flex-direction: column; gap: 12px; padding: 24px;
+    background: var(--card); border: 1px solid var(--rule); border-radius: 6px;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+  }
+  .card:hover { color: var(--ink); border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 6px 0 -2px rgba(17,17,17,.08); }
+  .card:hover .name { color: var(--accent); }
+  .card .desc { color: var(--text-2); flex-grow: 1; }
+  .card .foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .card .tag { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .card .arrow { font-family: var(--mono); font-size: 20px; color: var(--accent); transition: transform .15s; }
+  .card:hover .arrow { transform: translateX(4px); }
+
+  .apps-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 48px; margin-bottom: 40px; }
+  .apps-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 7vw, 88px); line-height: 1; letter-spacing: -0.02em; }
+  .apps-head p { margin: 0; max-width: 380px; color: var(--text-2); }
+  .group { border-top: 1px solid var(--rule); padding: 20px 0 40px; scroll-margin-top: 16px; }
+  .group h3 { margin: 0 0 16px; font-family: var(--mono); font-weight: 400; font-size: 13px; color: var(--muted); }
+  .group ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .group li { display: flex; }
+  .app { flex-grow: 1; min-height: 200px; }
+  .app .name { font-family: var(--serif); font-size: 30px; line-height: 1.1; }
+  .app .desc { font-size: 16px; }
+
+  /* How they work */
+  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px 48px; margin-top: 24px; }
+  .how h3 { margin: 0 0 8px; font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; }
+  .how p { margin: 0; color: var(--text-2); }
+  .how p a { text-decoration: underline; }
+
+  /* Footer */
+  .site-footer { border-top: 1px solid var(--ink); padding: 40px 0 56px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px 48px; }
+  .site-footer .mail { font-family: var(--serif); font-size: clamp(32px, 4vw, 48px); line-height: 1.1; }
+  .site-footer p { margin: 0; font-size: 14px; color: var(--muted); max-width: 420px; }
+  .site-footer p a { text-decoration: underline; color: var(--muted); }
+  .site-footer p a:hover { color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .card, .card .arrow { transition: none; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="brand" href="https://surikata3k.com/" aria-label="Surikata3K, home">
+      <picture>
+        <source srcset="/img/logo_mark-80.webp" type="image/webp">
+        <img src="/img/logo_mark-80.png" alt="" width="40" height="40">
+      </picture>
+      <span>Surikata<em>3K</em></span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="https://docs.surikata3k.com/">docs</a>
+      <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+      <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+      <a href="/" aria-current="page">apps</a>
+      <a href="mailto:hello@surikata3k.com">contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="https://surikata3k.com/">surikata3k</a> / apps</nav>
+
+    <section class="hero">
+      <h1>Small apps to learn and work, <em>right in your browser</em>.</h1>
+      <p class="intro">Password tools, hands-on cryptography and blockchain simulators, and helpers for the classroom. Open one and start: there is no account, nothing to install and nothing you type is sent anywhere.</p>
+      <ul class="facts" aria-label="What every app has in common">
+        <li>no install</li>
+        <li>no server</li>
+        <li>data stays on your device</li>
+        <li>free · CC BY-NC-SA 4.0</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="apps-title">
+      <div class="apps-head">
+        <h2 id="apps-title">All apps</h2>
+        <nav class="toc" aria-label="Categories">
+          <a href="#tools">tools</a>
+          <a href="#passwords">passwords</a>
+          <a href="#crypto">cryptography and security</a>
+        </nav>
+      </div>
+
+      <div class="group" id="tools">
+        <h3>tools</h3>
+        <ul>
+          <li><a class="card app" href="https://surikata3k.com/ditsmagics/en/"><span class="name">Dits Màgics</span><span class="desc">Touch typing for kids in English, Catalan and Spanish, with 44 levels and stars to earn.</span><span class="foot"><span class="tag">for kids</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/learning-outcome-hours/"><span class="name">Learning outcome hours planner</span><span class="desc">Spread the hours of each learning outcome across the school calendar, taking holidays and the weekly timetable into account.</span><span class="foot"><span class="tag">for teachers</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+        </ul>
+      </div>
+
+      <div class="group" id="passwords">
+        <h3>passwords</h3>
+        <ul>
+          <li><a class="card app" href="/passforge/"><span class="name">PassForge</span><span class="desc">A different password for every site from a single master key, without storing anything.</span><span class="foot"><span class="tag">PBKDF2 · HMAC</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/password-generator/"><span class="name">Password generator</span><span class="desc">Strong random passwords with the length and characters you choose.</span><span class="foot"><span class="tag">random</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/password-strength-checker/"><span class="name">Password strength checker</span><span class="desc">See how strong a password is, which weak patterns it has and how long it would take to crack.</span><span class="foot"><span class="tag">analysis</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/password-entropy-calculator/"><span class="name">Entropy calculator</span><span class="desc">Possible combinations, entropy in bits and brute-force time by length and character set.</span><span class="foot"><span class="tag">maths</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+        </ul>
+      </div>
+
+      <div class="group" id="crypto">
+        <h3>cryptography and security</h3>
+        <ul>
+          <li><a class="card app" href="/asymmetric-key-simulator/"><span class="name">Asymmetric key simulator</span><span class="desc">Padlocks, keys and seals: learn how public-key cryptography works by playing.</span><span class="foot"><span class="tag">simulator</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/asymmetric-key-simulator/rsa-math.html"><span class="name">The maths of RSA</span><span class="desc">Generate a key pair, encrypt, sign and try to break it, step by step and with small numbers.</span><span class="foot"><span class="tag">step by step</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+          <li><a class="card app" href="/blockchain-simulator/"><span class="name">Blockchain simulator</span><span class="desc">Hashing, blocks, mining and a distributed chain: tamper with a block and watch the chain break.</span><span class="foot"><span class="tag">simulator</span><span class="arrow" aria-hidden="true">→</span></span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="how-title">
+      <h2 id="how-title" class="label">how they work</h2>
+      <div class="how">
+        <div>
+          <h3>Private by design</h3>
+          <p>Every calculation happens in your browser with JavaScript and the Web Crypto API. Nothing is uploaded, logged or stored on a server.</p>
+        </div>
+        <div>
+          <h3>Made for class</h3>
+          <p>They come from teaching systems administration and cybersecurity, so each one explains what it does, with examples and a short FAQ.</p>
+        </div>
+        <div>
+          <h3>Open and reusable</h3>
+          <p>The code is on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a> under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener license">CC BY-NC-SA 4.0</a>: share and adapt it for non-commercial use, with credit.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <p class="label" style="margin-bottom:8px">say hello</p>
+      <a class="mail" href="mailto:hello@surikata3k.com">hello@surikata3k.com</a>
+    </div>
+    <p>© 2026 Surikata3K · <a href="https://surikata3k.com/">surikata3k.com</a><br>Apps licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener license">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>

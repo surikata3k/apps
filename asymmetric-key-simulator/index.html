@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public and private key simulator (asymmetric cryptography) · Surikata3K</title>
+    <meta name="description" content="Learn how public-key cryptography works by playing with padlocks and keys: send secrets, reply, sign messages and catch an impostor.">
+    <link rel="canonical" href="https://apps.surikata3k.com/asymmetric-key-simulator/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Surikata3K">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:title" content="Public and private key simulator (asymmetric cryptography)">
+    <meta property="og:description" content="Learn how public-key cryptography works by playing with padlocks and keys: send secrets, reply, sign messages and catch an impostor.">
+    <meta property="og:url" content="https://apps.surikata3k.com/asymmetric-key-simulator/">
+    <meta property="og:image" content="https://apps.surikata3k.com/img/og/asymmetric-key-simulator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#FBFBF9">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/", "image": "https://apps.surikata3k.com/img/og/asymmetric-key-simulator.png", "description": "Learn how public-key cryptography works by playing with padlocks and keys: send secrets, reply, sign messages and catch an impostor.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "inLanguage": "en", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en"}</script>
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+    <link rel="stylesheet" href="/assets/tailwind.min.css">
+    <script src="/assets/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .tab[aria-selected="true"] { background: #B23A0A; color: #fff; border-color: #B23A0A; }
+        .tab[aria-selected="true"] .tab-num { background: #fff; color: #B23A0A; }
+        .tab.done .tab-num { background: #10b981; color: #fff; }
+
+        /* Scene */
+        .item-slot { position: absolute; top: 50%; transform: translate(-50%, -50%); transition: left .9s ease-in-out; }
+        .item-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: .25rem; width: 7.5rem; padding: .6rem .5rem; border: 2px solid; border-radius: .9rem; text-align: center; box-shadow: 0 6px 16px rgba(15, 23, 42, .12); }
+        @media (min-width: 640px) { .item-card { width: 10rem; padding: .75rem .6rem; } }
+        .item-card .txt { font-size: .72rem; line-height: 1.25; color: #1e293b; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        @media (min-width: 640px) { .item-card .txt { font-size: .8rem; } }
+        .item-card .lbl { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+        .item-card .seal { position: absolute; top: -.7rem; right: -.7rem; width: 1.9rem; height: 1.9rem; border-radius: 999px; display: grid; place-items: center; color: #fff; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+        .pop { animation: pop .35s ease-out; }
+        @keyframes pop { 0% { transform: scale(.75); } 70% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
+        .bubble { min-height: 3.6rem; font-size: .75rem; line-height: 1.3; border-radius: .75rem; padding: .45rem .6rem; border: 1px solid transparent; transition: opacity .2s; }
+        @media (min-width: 640px) { .bubble { font-size: .85rem; } }
+        .bubble:empty { opacity: 0; }
+        .tone-neutral { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+        .tone-good { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+        .tone-bad { background: #fff1f2; color: #9f1239; border-color: #fecdd3; }
+
+        .keychip { display: inline-flex; align-items: center; gap: .3rem; border: 1.5px solid; border-radius: .55rem; padding: .1rem .45rem; font-size: .72rem; font-weight: 600; background: #fff; white-space: nowrap; }
+        .choice { display: inline-flex; align-items: center; gap: .5rem; padding: .6rem .9rem; border-radius: .8rem; border: 2px solid #e2e8f0; background: #fff; font-size: .9rem; font-weight: 600; color: #1e293b; text-align: left; transition: border-color .15s, transform .1s; }
+        .choice:hover { border-color: #818cf8; }
+        .choice:active { transform: scale(.98); }
+        .rule { transition: background-color .4s, border-color .4s, opacity .4s; }
+        .rule.lit { background: #FBF1EC; border-color: #E09572; opacity: 1; }
+        @media (prefers-reduced-motion: reduce) { .item-slot { transition: none; } .pop { animation: none; } }
+    </style>
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50">
+
+    <header class="s3k-bar">
+        <div class="s3k-wrap">
+            <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="30" height="30"></picture><span>Surikata<em>3K</em></span></a>
+            <nav class="s3k-nav" aria-label="Site">
+                <a href="https://docs.surikata3k.com/">docs</a>
+                <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+                <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+                <a href="/" aria-current="true">apps</a>
+                <a href="mailto:hello@surikata3k.com">contact</a>
+            </nav>
+        </div>
+    </header>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-200">
+                    <i data-lucide="key-round" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="s3k-title text-3xl text-slate-900 leading-tight">Asymmetric key simulator</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Padlocks, keys and seals: how it works, no formulas</p>
+                </div>
+            </div>
+            <button id="btnRestart" aria-label="Restart el escenario" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Restart</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-5">
+
+        <!-- Legend -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-3" aria-label="The two keys">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex gap-3">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 grid place-items-center"><i data-lucide="lock-open" class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="font-semibold text-slate-900">Public key = an open padlock</h2>
+                    <p class="text-sm text-slate-600">Everyone hands out copies to everybody. Anyone can <strong>lock</strong> it, but a padlock opens nothing.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex gap-3">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-rose-100 text-rose-700 grid place-items-center"><i data-lucide="key" class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="font-semibold text-slate-900">Private key = the only key</h2>
+                    <p class="text-sm text-slate-600">Only the owner has it. <strong>Opens</strong> what its padlock has locked, and is used to apply a <strong>seal</strong> that only the owner can make.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <nav class="grid grid-cols-2 sm:grid-cols-5 gap-2" role="tablist" aria-label="Scenarios">
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="1"><span class="tab-num w-6 h-6 shrink-0 rounded-full bg-slate-100 grid place-items-center text-xs">1</span>Send a secret</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="2"><span class="tab-num w-6 h-6 shrink-0 rounded-full bg-slate-100 grid place-items-center text-xs">2</span>Reply</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="3"><span class="tab-num w-6 h-6 shrink-0 rounded-full bg-slate-100 grid place-items-center text-xs">3</span>Sign</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="4"><span class="tab-num w-6 h-6 shrink-0 rounded-full bg-slate-100 grid place-items-center text-xs">4</span>The impostor</button>
+            <button class="tab col-span-2 sm:col-span-1 flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="quiz"><span class="tab-num w-6 h-6 shrink-0 rounded-full bg-slate-100 grid place-items-center text-xs"><i data-lucide="trophy" class="w-3.5 h-3.5"></i></span>Final challenge</button>
+        </nav>
+
+        <!-- SCENE -->
+        <section id="sim" class="flex flex-col gap-5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <div id="stage" class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-3 sm:p-5 scroll-mt-20">
+                <!-- Characters -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-6">
+                    <div class="flex flex-col items-center gap-1.5 text-center">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-100 text-sky-700 grid place-items-center"><i data-lucide="user" class="w-7 h-7"></i></div>
+                        <div class="font-semibold text-slate-900 leading-tight">Anna</div>
+                        <div id="bub-anna" class="bubble w-full"></div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 text-center">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-100 text-amber-700 grid place-items-center"><i data-lucide="eye" class="w-7 h-7"></i></div>
+                        <div class="font-semibold text-slate-900 leading-tight">Eve <span class="block sm:inline text-xs font-normal text-slate-500">listens to the network</span></div>
+                        <div id="bub-eva" class="bubble w-full"></div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 text-center">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-violet-100 text-violet-700 grid place-items-center"><i data-lucide="user" class="w-7 h-7"></i></div>
+                        <div class="font-semibold text-slate-900 leading-tight">Biel</div>
+                        <div id="bub-biel" class="bubble w-full"></div>
+                    </div>
+                </div>
+
+                <!-- Network -->
+                <div class="relative h-36 mt-3">
+                    <div class="absolute left-[8%] right-[8%] top-1/2 border-t-2 border-dashed border-slate-300"></div>
+                    <div class="absolute left-1/2 -translate-x-1/2 bottom-0 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">network</div>
+                    <div id="itemSlot" class="item-slot" style="left:16.67%"></div>
+                </div>
+
+                <!-- Key rings -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-6 mt-2 pt-3 border-t border-slate-100">
+                    <div><div class="text-[10px] uppercase tracking-wider font-semibold text-slate-400 mb-1 text-center">Keyring</div><div id="ring-anna" class="flex flex-wrap justify-center gap-1"></div></div>
+                    <div><div class="text-[10px] uppercase tracking-wider font-semibold text-slate-400 mb-1 text-center">Keyring</div><div id="ring-eva" class="flex flex-wrap justify-center gap-1"></div></div>
+                    <div><div class="text-[10px] uppercase tracking-wider font-semibold text-slate-400 mb-1 text-center">Keyring</div><div id="ring-biel" class="flex flex-wrap justify-center gap-1"></div></div>
+                </div>
+            </div>
+
+                <!-- Narration and choices -->
+                <div id="panel" class="lg:col-span-5 lg:sticky lg:top-20 scroll-mt-20 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i>
+                        <h2 id="scTitle" class="font-semibold text-slate-800 text-sm"></h2>
+                    </div>
+                    <div class="p-5 flex flex-col gap-4" aria-live="polite">
+                        <p id="narr" class="text-slate-700 leading-relaxed"></p>
+                        <div id="notes" class="flex flex-col gap-2"></div>
+                        <div id="choices" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+          </div>
+
+                <!-- Rules -->
+                <aside class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5 text-indigo-600"></i>
+                        <h2 class="font-semibold text-slate-800 text-sm">The rules you discover</h2>
+                    </div>
+                    <ul class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-sm">
+                        <li id="rule-1" class="rule opacity-50 flex gap-3 items-start p-2.5 rounded-xl border border-slate-200"><i data-lucide="lock" class="w-4 h-4 mt-0.5 shrink-0 text-indigo-600"></i><span><strong>Encrypt</strong> → padlock (public) <strong>of the recipient</strong></span></li>
+                        <li id="rule-2" class="rule opacity-50 flex gap-3 items-start p-2.5 rounded-xl border border-slate-200"><i data-lucide="lock-open" class="w-4 h-4 mt-0.5 shrink-0 text-indigo-600"></i><span><strong>Decrypt</strong> → private key <strong>of the recipient</strong></span></li>
+                        <li id="rule-3" class="rule opacity-50 flex gap-3 items-start p-2.5 rounded-xl border border-slate-200"><i data-lucide="stamp" class="w-4 h-4 mt-0.5 shrink-0 text-indigo-600"></i><span><strong>Sign</strong> → private key <strong>of the sender</strong></span></li>
+                        <li id="rule-4" class="rule opacity-50 flex gap-3 items-start p-2.5 rounded-xl border border-slate-200"><i data-lucide="badge-check" class="w-4 h-4 mt-0.5 shrink-0 text-indigo-600"></i><span><strong>Verify</strong> → public key <strong>of the sender</strong></span></li>
+                        <li id="rule-5" class="rule opacity-50 flex gap-3 items-start p-2.5 rounded-xl border border-slate-200"><i data-lucide="shield-alert" class="w-4 h-4 mt-0.5 shrink-0 text-indigo-600"></i><span><strong>Check</strong> that the padlock really belongs to who it claims (certificates)</span></li>
+                    </ul>
+                    <p class="px-4 pb-4 text-xs text-slate-500">Want to see the numbers behind it? <a href="rsa-math.html" class="font-semibold text-indigo-600 hover:underline">The maths of RSA →</a></p>
+                </aside>
+        </section>
+
+        <!-- CHALLENGE -->
+        <section id="quiz" class="hidden" aria-label="Final challenge">
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2"><i data-lucide="trophy" class="w-5 h-5 text-indigo-600"></i><h2 class="font-semibold text-slate-800 text-sm">Which key do you use?</h2></div>
+                    <span id="qProgress" class="text-xs font-semibold text-slate-500"></span>
+                </div>
+                <div id="qBody" class="p-5 flex flex-col gap-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- About this app and related apps -->
+    <section class="border-t border-slate-900 mt-10" aria-labelledby="info-title">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-700 leading-relaxed">
+            <h2 id="info-title" class="s3k-title text-4xl text-slate-900">What is asymmetric cryptography?</h2>
+            <p class="mt-4">Asymmetric, or public-key, cryptography uses a <strong>key pair</strong>: a public key that can be shared with anyone, and a private key that only its owner has. What is encrypted with the public key can only be decrypted with the private key, and what is signed with the private key can be verified with the public key.</p>
+            <p class="mt-4">The simulator explains it with padlocks and keys in four scenarios: sending a secret, replying, signing a message and spotting a man-in-the-middle attack. At the end, a quiz checks whether you know which key to use in each case.</p>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">Where it is used</h3>
+            <ul class="mt-3 space-y-2 list-disc pl-5"><li><strong>HTTPS:</strong> each website’s public key arrives inside a certificate.</li><li><strong>SSH:</strong> your public key is copied to the server in <code>authorized_keys</code>.</li><li><strong>Signing emails and documents:</strong> GPG, PGP and e-signatures.</li></ul>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">frequently asked questions</h3>
+            <div class="mt-3 divide-y divide-slate-200 border-y border-slate-200">
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">Which key encrypts and which decrypts?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">You encrypt with the recipient’s public key, and they decrypt with their private key.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">And for signing a message?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">The other way round: you sign with your own private key and anyone can verify the signature with your public key.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">What is a man-in-the-middle attack?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">An attacker gets in between and hands over their own public key while pretending to be someone else. You prevent it by checking that the key really belongs to who it claims, using certificates or its fingerprint.</p></details>
+            </div>
+            <h2 class="mt-10 font-mono text-sm text-slate-500 lowercase">learn more</h2>
+            <ul class="mt-3 space-y-1 list-disc pl-5"><li><a href="/asymmetric-key-simulator/rsa-math.html" class="text-indigo-700 underline hover:text-indigo-900">The maths of RSA, step by step</a></li><li><a href="https://docs.surikata3k.com/guides/asymmetric_encryption/" class="text-indigo-700 underline hover:text-indigo-900">Asymmetric encryption guide in the docs</a></li></ul>
+            <h2 class="mt-10 font-mono text-sm text-slate-500 lowercase">more apps you might like</h2>
+            <ul class="mt-3 grid gap-4 sm:grid-cols-2">
+                <li><a href="/asymmetric-key-simulator/rsa-math.html" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">The maths of RSA</span><span class="block mt-1 text-sm text-slate-600">RSA step by step: generate keys, encrypt, sign and try to break it.</span></a></li>
+                <li><a href="/blockchain-simulator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Blockchain simulator</span><span class="block mt-1 text-sm text-slate-600">Hashing, blocks, mining and a distributed chain, hands on.</span></a></li>
+                <li><a href="/passforge/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">PassForge</span><span class="block mt-1 text-sm text-slate-600">A different password for every site from a single master key.</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="s3k-foot">
+        <div class="s3k-foot-wrap">
+            <div>
+                <p class="s3k-label">say hello</p>
+                <a class="s3k-mail" href="mailto:hello@surikata3k.com">hello@surikata3k.com</a>
+            </div>
+            <p class="s3k-legal">© 2026 Surikata3K · <a href="/">All apps</a> · <a href="https://surikata3k.com/">surikata3k.com</a><br>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
+        </div>
+    </footer>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const icons = () => lucide.createIcons();
+        const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ---------- Characters and keys ----------
+        const WHO = {
+            anna: { name: 'Anna', short: 'Anna', fg: '#0284c7', bg: '#e0f2fe' },
+            biel: { name: 'Biel', short: 'Biel', fg: '#7c3aed', bg: '#ede9fe' },
+            eva:  { name: 'Eve', short: 'Eve', fg: '#d97706', bg: '#fef3c7' },
+        };
+        const KEYS = {
+            annaPub: { owner: 'anna', pub: true }, annaPriv: { owner: 'anna', pub: false },
+            bielPub: { owner: 'biel', pub: true }, bielPriv: { owner: 'biel', pub: false },
+            evaPub:  { owner: 'eva',  pub: true }, evaPriv:  { owner: 'eva',  pub: false },
+            fakeBiel: { owner: 'eva', pub: true, shownAs: 'biel' },   // Eva's padlock labelled “Biel”
+        };
+        let revealFake = false;
+        function keyLook(id) {
+            const k = KEYS[id];
+            const as = (k.shownAs && !revealFake) ? k.shownAs : k.owner;
+            return { ...k, as, w: WHO[as] };
+        }
+        function keyLabel(id, long = true) {
+            const k = keyLook(id);
+            const kind = k.pub ? 'public padlock' : 'private key';
+            if (id === 'fakeBiel' && revealFake) return long ? "“Biel’s” padlock (it was Eve’s!)" : "“Biel” = Eve!";
+            return long ? `${k.w.name}’s ${kind}` : `${k.w.short} ${k.pub ? 'public' : 'private'}`;
+        }
+        function keyChip(id) {
+            const k = keyLook(id);
+            return `<span class="keychip" style="border-color:${k.w.fg};color:${k.w.fg}"><i data-lucide="${k.pub ? 'lock-open' : 'key'}" class="w-3 h-3"></i>${esc(keyLabel(id, false))}</span>`;
+        }
+        let rings = {};
+        function setRings(r) { rings = r; renderRings(); }
+        function renderRings() {
+            for (const who of ['anna', 'eva', 'biel']) $('ring-' + who).innerHTML = (rings[who] || []).map(keyChip).join('');
+            icons();
+        }
+
+        // ---------- The travelling object ----------
+        const POS = { anna: '16.67%', eva: '50%', biel: '83.33%' };
+        function setItem(it) {
+            let html = '';
+            if (!it) { $('itemSlot').innerHTML = ''; return; }
+            if (it.t === 'plain' || it.t === 'signed') {
+                const seal = it.t === 'signed' ? `<span class="seal" style="background:${WHO[it.seal].fg}"><i data-lucide="stamp" class="w-4 h-4"></i></span>` : '';
+                const lbl = it.t === 'signed' ? `<span class="lbl" style="color:${WHO[it.seal].fg}">${WHO[it.seal].short}’s seal</span>` : '<span class="lbl text-slate-400">plain text</span>';
+                html = `<div class="item-card pop bg-white border-slate-300"><i data-lucide="file-text" class="w-6 h-6 text-slate-500"></i><span class="txt">${esc(it.text)}</span>${lbl}${seal}</div>`;
+            } else if (it.t === 'locked') {
+                const k = keyLook(it.key);
+                html = `<div class="item-card pop" style="background:${k.w.bg};border-color:${k.w.fg}"><i data-lucide="lock" class="w-7 h-7" style="color:${k.w.fg}"></i><span class="txt tracking-widest">••••••••</span><span class="lbl" style="color:${k.w.fg}">locked with ${k.w.short}’s padlock</span></div>`;
+            } else if (it.t === 'padlock') {
+                const k = keyLook(it.key);
+                html = `<div class="item-card pop" style="background:${k.w.bg};border-color:${k.w.fg}"><i data-lucide="lock-open" class="w-7 h-7" style="color:${k.w.fg}"></i><span class="txt">A copy of the padlock</span><span class="lbl" style="color:${k.w.fg}">“${k.w.short}’s”</span></div>`;
+            }
+            $('itemSlot').innerHTML = html;
+            icons();
+        }
+        function place(where) {
+            const s = $('itemSlot');
+            s.style.transition = 'none'; s.style.left = POS[where]; void s.offsetWidth; s.style.transition = '';
+        }
+        async function go(where) { $('itemSlot').style.left = POS[where]; await wait(REDUCED ? 150 : 1000); }
+
+        // ---------- Speech bubbles, narration and choices ----------
+        function bubble(who, html, tone = 'neutral') { const b = $('bub-' + who); b.className = 'bubble w-full tone-' + tone; b.innerHTML = html; }
+        function clearBubbles() { for (const w of ['anna', 'eva', 'biel']) { const b = $('bub-' + w); b.className = 'bubble w-full'; b.innerHTML = ''; } }
+        function narrate(html) { $('narr').innerHTML = html; $('notes').innerHTML = ''; $('choices').innerHTML = ''; }
+        function note(html, ok) {
+            const cls = ok ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900';
+            $('notes').insertAdjacentHTML('beforeend', `<div class="flex gap-2 items-start border rounded-xl p-3 text-sm ${cls}"><i data-lucide="${ok ? 'circle-check' : 'circle-x'}" class="w-5 h-5 shrink-0 ${ok ? 'text-emerald-600' : 'text-rose-600'}"></i><div>${html}</div></div>`);
+            icons();
+        }
+        const good = h => note(h, true), bad = h => note(h, false);
+
+        let runId = 0;
+        class Abort extends Error {}
+        function guard(id) { if (id !== runId) throw new Abort(); }
+        function wait(ms) { const id = runId; return new Promise(r => setTimeout(r, ms)).then(() => guard(id)); }
+
+        // On mobile the scene and the choices don't fit together: scroll to guide the student
+        const NARROW = () => innerWidth < 1024;
+        let wasClicked = false;
+        function focusStage() { if (NARROW()) $('stage').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' }); }
+        function focusPanel() { if (NARROW() && wasClicked) $('panel').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'nearest' }); }
+
+        // Show buttons and wait for the student to pick one
+        function choose(opts) {
+            const id = runId;
+            return new Promise(resolve => {
+                const box = $('choices'); box.innerHTML = '';
+                for (const o of opts) {
+                    const b = document.createElement('button');
+                    b.className = 'choice' + (o.primary ? ' !bg-indigo-600 !border-indigo-600 !text-white' : '');
+                    if (o.key) {
+                        const k = keyLook(o.key);
+                        b.innerHTML = `<span class="w-8 h-8 shrink-0 rounded-lg grid place-items-center" style="background:${k.w.bg};color:${k.w.fg}"><i data-lucide="${k.pub ? 'lock-open' : 'key'}" class="w-4 h-4"></i></span>${esc(keyLabel(o.key))}`;
+                    } else {
+                        b.innerHTML = (o.icon ? `<i data-lucide="${o.icon}" class="w-4 h-4 shrink-0"></i>` : '') + esc(o.label);
+                    }
+                    b.addEventListener('click', () => { if (id !== runId) return; box.innerHTML = ''; wasClicked = true; focusStage(); resolve(o); });
+                    box.appendChild(b);
+                }
+                icons();
+                setTimeout(focusPanel, 250);
+            }).then(o => { guard(id); return o; });
+        }
+        const again = () => choose([{ label: 'Try again', icon: 'rotate-ccw', primary: true }]);
+        const next = (label = 'Next') => choose([{ label, icon: 'arrow-right', primary: true }]);
+
+        // ---------- Progress ----------
+        const done = new Set();
+        const RULES_FOR = { 1: [1, 2], 2: [1, 2], 3: [3, 4], 4: [5] };
+        function finish(n, lesson) {
+            done.add(n);
+            RULES_FOR[n].forEach(r => $('rule-' + r).classList.add('lit'));
+            document.querySelector(`.tab[data-tab="${n}"]`).classList.add('done');
+            document.querySelector(`.tab[data-tab="${n}"] .tab-num`).innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i>';
+            good(`<strong>Scenario complete.</strong> ${lesson}`);
+            const nxt = n < 4 ? String(n + 1) : 'quiz';
+            choose([{ label: n < 4 ? 'Next scenario' : 'To the final challenge', icon: 'arrow-right', primary: true }]).then(() => selectTab(nxt)).catch(() => {});
+        }
+
+        // ---------- SCENE 1: send a secret ----------
+        async function sc1() {
+            $('scTitle').textContent = '1 · Send a secret';
+            setRings({ anna: ['annaPriv', 'annaPub', 'bielPub'], eva: ['evaPriv', 'evaPub', 'annaPub', 'bielPub'], biel: ['bielPriv', 'bielPub', 'annaPub'] });
+            const MSG = 'The Wi-Fi password is Suricata3K';
+            for (;;) {
+                clearBubbles(); place('anna'); setItem({ t: 'plain', text: MSG });
+                narrate(`<strong>Anna</strong> wants to send a secret to <strong>Biel</strong>. Everything goes over the network, and <strong>Eve</strong> sees everything on it. Look at Anna’s keyring: <strong>what does she use to protect the message?</strong>`);
+                const c = await choose([{ key: 'bielPub' }, { key: 'annaPub' }, { key: 'annaPriv' }, { label: "Nothing, she sends it as is", icon: 'send' }]);
+                if (c.key === 'bielPub') break;
+                if (!c.key) {
+                    await go('eva'); bubble('eva', `😈 I can read it all: “${esc(MSG)}”`, 'bad');
+                    await go('biel'); bubble('biel', 'Received.');
+                    bad("With no protection, anyone listening to the network can read it.");
+                } else if (c.key === 'annaPub') {
+                    setItem({ t: 'locked', key: 'annaPub' }); await wait(600);
+                    await go('eva'); bubble('eva', "It is locked with Anna’s padlock. I can’t open it.", 'good');
+                    await go('biel'); bubble('biel', "😕 I don’t have Anna’s key. I can’t open it!", 'bad');
+                    bad("Eve can’t read it… but neither can Biel! Anna’s padlock only opens with <strong>Anna’s private key</strong>, and only she has it.");
+                } else {
+                    setItem({ t: 'signed', text: MSG, seal: 'anna' }); await wait(600);
+                    await go('eva'); bubble('eva', `😈 It has Anna’s seal, but I can read it: “${esc(MSG)}”`, 'bad');
+                    await go('biel'); bubble('biel', "Received. And it’s definitely from Anna.");
+                    bad("With the private key you <strong>seal</strong>: you prove it is yours, but you hide nothing. You’ll see this in scenario 3.");
+                }
+                await again();
+            }
+            setItem({ t: 'locked', key: 'bielPub' });
+            good("Well done! Everyone has a copy of Biel’s padlock and anyone can lock it, but <strong>only Biel’s private key opens it</strong>.");
+            await wait(900);
+            await go('eva'); bubble('eva', 'I have Biel’s padlock too… but a padlock only locks. I can’t open it. 🤷', 'good');
+            await go('biel');
+            narrate("The box reaches <strong>Biel</strong>. <strong>Which of his keys opens it?</strong>");
+            for (;;) {
+                const c = await choose([{ key: 'bielPub' }, { key: 'bielPriv' }, { key: 'annaPub' }]);
+                if (c.key === 'bielPriv') break;
+                bubble('biel', '🤔 This doesn’t open it…', 'bad');
+                bad(c.key === 'bielPub' ? "A padlock (public key) is for <strong>locking</strong>, not opening." : "Anna’s padlock is for sending things to Anna, not for opening Biel’s boxes.");
+            }
+            setItem({ t: 'plain', text: MSG }); bubble('biel', `🔓 “${esc(MSG)}”`, 'good');
+            finish(1, "To send a secret you lock it with the <strong>recipient’s padlock</strong>, and only their <strong>private key</strong> opens it. Eve has the same padlock and it is no use to her.");
+        }
+
+        // ---------- SCENE 2: reply ----------
+        async function sc2() {
+            $('scTitle').textContent = '2 · Reply';
+            setRings({ anna: ['annaPriv', 'annaPub', 'bielPub'], eva: ['evaPriv', 'evaPub', 'annaPub', 'bielPub'], biel: ['bielPriv', 'bielPub', 'annaPub'] });
+            const MSG = 'Thanks! I’m connected now.';
+            for (;;) {
+                clearBubbles(); place('biel'); setItem({ t: 'plain', text: MSG });
+                narrate("Now <strong>Biel</strong> wants to reply to <strong>Anna</strong> in secret. Look at Biel’s keyring: <strong>what does he lock the reply with?</strong>");
+                const c = await choose([{ key: 'bielPub' }, { key: 'bielPriv' }, { key: 'annaPub' }]);
+                if (c.key === 'annaPub') break;
+                if (c.key === 'bielPub') {
+                    setItem({ t: 'locked', key: 'bielPub' }); await wait(600);
+                    await go('eva'); bubble('eva', 'Biel’s padlock. I can’t open it.', 'good');
+                    await go('anna'); bubble('anna', '😕 Only Biel can open his padlock!', 'bad');
+                    bad("Biel locked the box with his own padlock: only he could open it. Each person has <strong>their own key pair</strong>.");
+                } else {
+                    setItem({ t: 'signed', text: MSG, seal: 'biel' }); await wait(600);
+                    await go('eva'); bubble('eva', `😈 I can read it: “${esc(MSG)}”`, 'bad');
+                    await go('anna'); bubble('anna', 'Received, with Biel’s seal.');
+                    bad("Biel’s private key seals, but hides nothing: Eve has read it.");
+                }
+                await again();
+            }
+            setItem({ t: 'locked', key: 'annaPub' });
+            good("Exactly: to write to Anna you use <strong>Anna’s padlock</strong>, not your own.");
+            await wait(900);
+            await go('eva'); bubble('eva', "Anna’s padlock. I can’t open it.", 'good');
+            await go('anna');
+            narrate("The reply reaches <strong>Anna</strong>. <strong>What does she open it with?</strong>");
+            for (;;) {
+                const c = await choose([{ key: 'annaPub' }, { key: 'bielPub' }, { key: 'annaPriv' }]);
+                if (c.key === 'annaPriv') break;
+                bubble('anna', '🤔 It won’t open…', 'bad');
+                bad(c.key === 'annaPub' ? "A padlock only locks." : "Biel’s padlock opens nothing and, besides, this box isn’t locked with Biel’s padlock.");
+            }
+            setItem({ t: 'plain', text: MSG }); bubble('anna', `🔓 “${esc(MSG)}”`, 'good');
+            finish(2, "Each person has their own pair. The question is always: <strong>who is it for?</strong> You use their padlock, and they open it with their private key.");
+        }
+
+        // ---------- SCENE 3: sign ----------
+        async function sc3() {
+            $('scTitle').textContent = '3 · Sign a message';
+            setRings({ anna: ['annaPriv', 'annaPub', 'bielPub'], eva: ['evaPriv', 'evaPub', 'annaPub', 'bielPub'], biel: ['bielPriv', 'bielPub', 'annaPub'] });
+            const MSG = 'No class tomorrow.';
+            const FAKE = 'Surprise exam tomorrow!';
+            for (;;) {
+                clearBubbles(); place('biel'); setItem({ t: 'plain', text: MSG });
+                narrate("Biel wants to post a notice for everyone. It isn’t secret, but everyone must be able to check that <strong>he wrote it</strong> and that <strong>nobody has changed it</strong>. <strong>Which key does he seal it with?</strong>");
+                const c = await choose([{ key: 'bielPub' }, { key: 'bielPriv' }, { key: 'annaPub' }]);
+                if (c.key === 'bielPriv') break;
+                if (c.key === 'bielPub') bad("Everyone has Biel’s padlock, Eve included: if you could seal with it, anyone could pretend to be Biel.");
+                else bad("That would lock it so only Anna could read it, and it proves nothing: everyone has Anna’s padlock. We want a seal that <strong>only Biel</strong> can make.");
+                await again();
+            }
+            good("Correct: the seal is made with the <strong>private key</strong>, because it is the only thing that only Biel has.");
+            for (;;) {
+                setItem({ t: 'signed', text: MSG, seal: 'biel' }); place('biel'); clearBubbles();
+                await wait(700);
+                await go('eva'); bubble('eva', `I can read it: the seal doesn’t hide the text.`, 'neutral');
+                narrate("Now <strong>you are Eve</strong> and you have the notice in your hands. <strong>What do you do?</strong>");
+                const c = await choose([
+                    { id: 'edit', label: "Change the text and keep Biel’s seal", icon: 'pencil' },
+                    { id: 'reseal', label: 'Change the text and seal it myself', icon: 'stamp' },
+                    { id: 'pass', label: 'Let it through', icon: 'arrow-right' },
+                ]);
+                if (c.id === 'edit') {
+                    setItem({ t: 'signed', text: FAKE, seal: 'biel' }); bubble('eva', '😈 I changed the text.', 'bad'); await wait(700);
+                    await go('anna'); bubble('anna', '❌ Biel’s seal doesn’t match this text. Someone has tampered with it!', 'good');
+                    good("The seal is tied to the exact content: change a single letter and the check fails.");
+                } else if (c.id === 'reseal') {
+                    setItem({ t: 'signed', text: FAKE, seal: 'eva' }); bubble('eva', '😈 New text and my own seal.', 'bad'); await wait(700);
+                    await go('anna'); bubble('anna', '❌ I check it with Biel’s padlock… and it doesn’t fit. Biel didn’t seal this!', 'good');
+                    good("Eve can seal, but only with <strong>her own</strong> private key. Anna checks it with <strong>Biel’s public padlock</strong>, and it doesn’t fit.");
+                } else {
+                    bubble('eva', 'How boring… I’ll let it through.', 'neutral');
+                    await go('anna'); bubble('anna', '✅ I check it with Biel’s padlock: it fits. It’s from Biel and untouched.', 'good');
+                    good("Anna uses <strong>Biel’s public key</strong> to check the seal. Anyone can do this check.");
+                }
+                $('narr').innerHTML = "You can try another move as Eve or finish the scenario.";   // without clearing the explanation
+                const n = await choose([{ id: 'again', label: "Another move as Eve", icon: 'rotate-ccw' }, { id: 'end', label: 'Finish', icon: 'check', primary: true }]);
+                if (n.id === 'end') break;
+            }
+            narrate('');
+            finish(3, "<strong>Sign</strong> = seal with the sender’s private key. <strong>Verify</strong> = check it with their public key. Note that a signature <strong>doesn’t hide</strong> the text: if you also need secrecy, combine it with the recipient’s padlock.");
+        }
+
+        // ---------- SCENE 4: the impostor (man in the middle) ----------
+        async function sc4() {
+            $('scTitle').textContent = "4 · The impostor (man-in-the-middle attack)";
+            revealFake = false;
+            setRings({ anna: ['annaPriv', 'annaPub'], eva: ['evaPriv', 'evaPub'], biel: ['bielPriv', 'bielPub'] });
+            clearBubbles(); place('biel'); setItem({ t: 'padlock', key: 'bielPub' });
+            narrate("Anna has never spoken to Biel and <strong>doesn’t have his padlock</strong>. She asks him over the network to send her a copy.");
+            bubble('anna', 'Biel, send me your padlock!');
+            await next();
+            bubble('biel', 'Here you go!');
+            await go('eva');
+            narrate("<strong>Eve</strong> intercepts it. She keeps it and instead sends Anna <strong>her own padlock</strong> with a label that says “Biel”.");
+            rings.eva = ['evaPriv', 'evaPub', 'bielPub']; renderRings();
+            await next();
+            setItem({ t: 'padlock', key: 'fakeBiel' }); bubble('eva', '😈 Swapping the label…', 'bad'); await wait(700);
+            await go('anna');
+            rings.anna = ['annaPriv', 'annaPub', 'fakeBiel']; renderRings();
+            bubble('anna', 'Great, now I have Biel’s padlock!');
+            narrate("Anna, trusting it, locks a secret with this padlock and sends it to Biel.");
+            await next();
+            const MSG = 'Meet at 5 in the library';
+            setItem({ t: 'locked', key: 'fakeBiel' }); await wait(700);
+            await go('eva');
+            setItem({ t: 'plain', text: MSG }); bubble('eva', `😈 It’s MY padlock: I open it with my private key. “${esc(MSG)}”`, 'bad');
+            narrate("Eve opens it with her private key and reads it. Then she <strong>locks it again with Biel’s real padlock</strong> so nobody suspects anything.");
+            await next();
+            setItem({ t: 'locked', key: 'bielPub' }); await wait(700);
+            await go('biel'); setItem({ t: 'plain', text: MSG });
+            bubble('biel', '🔓 Received. All good! 🙂', 'neutral');
+            revealFake = true; renderRings();
+            narrate("Neither Anna nor Biel noticed anything, and Eve read it all. The encryption worked perfectly: the problem is that <strong>Anna had the wrong padlock</strong>.<br><br><strong>How could Anna have avoided this?</strong>");
+            for (;;) {
+                const c = await choose([
+                    { id: 'big', label: 'Using a bigger padlock (a longer key)', icon: 'maximize' },
+                    { id: 'check', label: 'Checking that the padlock is Biel’s (certificate or fingerprint)', icon: 'shield-check' },
+                    { id: 'twice', label: 'Locking it with two padlocks', icon: 'copy' },
+                ]);
+                if (c.id === 'check') break;
+                bad(c.id === 'big' ? "Size doesn’t matter: however big it is, the padlock is still Eve’s." : "If both padlocks are Eve’s (or one of them is), she can still open it.");
+            }
+            good("Exactly. On the web, a site’s public key arrives inside a <strong>certificate</strong> sealed by a trusted authority (HTTPS). With SSH, the first connection shows you the server’s <strong>fingerprint</strong> so you can check it.");
+            finish(4, "Asymmetric cryptography only protects you if you are sure that <strong>the padlock really belongs to who it claims</strong>.");
+        }
+
+        // ---------- FINAL CHALLENGE ----------
+        const OPTS = ['My public key', 'My private key', "The other person’s public key", "The other person’s private key"];
+        const QS = [
+            { q: 'You want to send an encrypted email to Marta.', a: 2, why: "You encrypt with the recipient’s padlock (public key)." },
+            { q: "You’ve received a file encrypted for you. What do you open it with?", a: 1, why: 'Only your private key opens what was locked with your padlock.' },
+            { q: "You want to sign a document so people know it’s yours.", a: 1, why: 'The seal is made with the private key: it’s the only thing only you have.' },
+            { q: "Alex sends you a signed document. What do you check the signature with?", a: 2, why: 'You verify it with the signer’s public key.' },
+            { q: 'You want to log in over SSH without a password. What do you copy to the server (authorized_keys)?', a: 0, why: 'Your public key goes on the server; the private key never leaves your computer.' },
+            { q: 'What can you publish on GitHub or your website without any risk?', a: 0, why: 'The public key is made to be shared.' },
+            { q: "You are a web server. To prove to browsers that it’s really you, you use…", a: 1, why: 'The server signs with its private key, and the browser checks it with the public key in the certificate.' },
+            { q: "Which of these keys should you never have?", a: 3, why: 'Someone else’s private key belongs only to them. If you have it, something has gone very wrong.' },
+        ];
+        let qi = 0, score = 0;
+        function renderQuiz() {
+            const body = $('qBody');
+            if (qi >= QS.length) {
+                $('qProgress').textContent = '';
+                const msg = score === QS.length ? 'Perfect! You’ve mastered the keys. 🏆' : score >= 6 ? 'Well done! Review the rules you got wrong.' : 'Go through the scenarios again and have another try.';
+                body.innerHTML = `<div class="text-center py-6"><div class="text-5xl font-bold text-indigo-600">${score}/${QS.length}</div><p class="mt-2 text-slate-700">${msg}</p><button id="qRestart" class="mt-5 choice !bg-indigo-600 !border-indigo-600 !text-white"><i data-lucide="rotate-ccw" class="w-4 h-4"></i>Try again</button></div>`;
+                $('qRestart').onclick = () => { qi = 0; score = 0; renderQuiz(); };
+                icons(); return;
+            }
+            const item = QS[qi];
+            $('qProgress').textContent = `${qi + 1} / ${QS.length}`;
+            body.innerHTML = `<p class="text-lg font-semibold text-slate-900">${esc(item.q)}</p><div id="qOpts" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div><div id="qFb"></div>`;
+            OPTS.forEach((o, i) => {
+                const b = document.createElement('button');
+                b.className = 'choice justify-start';
+                b.innerHTML = `<i data-lucide="${i % 2 === 0 ? 'lock-open' : 'key'}" class="w-4 h-4 shrink-0 ${i % 2 === 0 ? 'text-emerald-600' : 'text-rose-600'}"></i>${esc(o)}`;
+                b.onclick = () => {
+                    const ok = i === item.a; if (ok) score++;
+                    [...$('qOpts').children].forEach((x, j) => {
+                        x.disabled = true;
+                        if (j === item.a) x.classList.add('!border-emerald-500', '!bg-emerald-50');
+                        else if (j === i) x.classList.add('!border-rose-400', '!bg-rose-50');
+                    });
+                    $('qFb').innerHTML = `<div class="flex gap-2 items-start border rounded-xl p-3 text-sm ${ok ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900'}"><i data-lucide="${ok ? 'circle-check' : 'circle-x'}" class="w-5 h-5 shrink-0"></i><div><strong>${ok ? 'Correct!' : 'Not quite.'}</strong> ${esc(item.why)}</div></div><button id="qNext" class="mt-3 choice !bg-indigo-600 !border-indigo-600 !text-white">${qi + 1 < QS.length ? 'Next question' : 'See the result'}<i data-lucide="arrow-right" class="w-4 h-4"></i></button>`;
+                    $('qNext').onclick = () => { qi++; renderQuiz(); };
+                    icons();
+                };
+                $('qOpts').appendChild(b);
+            });
+            icons();
+        }
+
+        // ---------- Tabs ----------
+        const SCENES = { 1: sc1, 2: sc2, 3: sc3, 4: sc4 };
+        let current = '1';
+        function selectTab(name) {
+            current = name;
+            runId++;                                // stop the scene that is currently running
+            document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
+            const isQuiz = name === 'quiz';
+            $('sim').classList.toggle('hidden', isQuiz);
+            $('quiz').classList.toggle('hidden', !isQuiz);
+            if (isQuiz) { renderQuiz(); return; }
+            revealFake = false;
+            SCENES[name]().catch(e => { if (!(e instanceof Abort)) console.error(e); });
+        }
+        document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { selectTab(t.dataset.tab); }));
+        $('btnRestart').addEventListener('click', () => selectTab(current));
+        selectTab('1');
+        icons();
+    </script>
+</body>
+</html>

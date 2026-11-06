@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password entropy calculator and brute-force time · Surikata3K</title>
+    <meta name="description" content="Calculate the possible combinations, entropy in bits and brute-force time of a password from its length and character sets.">
+    <link rel="canonical" href="https://apps.surikata3k.com/password-entropy-calculator/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Surikata3K">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:title" content="Password entropy calculator and brute-force time">
+    <meta property="og:description" content="Calculate the possible combinations, entropy in bits and brute-force time of a password from its length and character sets.">
+    <meta property="og:url" content="https://apps.surikata3k.com/password-entropy-calculator/">
+    <meta property="og:image" content="https://apps.surikata3k.com/img/og/password-entropy-calculator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#FBFBF9">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Entropy calculator", "url": "https://apps.surikata3k.com/password-entropy-calculator/", "image": "https://apps.surikata3k.com/img/og/password-entropy-calculator.png", "description": "Calculate the possible combinations, entropy in bits and brute-force time of a password from its length and character sets.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "inLanguage": "en", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en"}</script>
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+    <link rel="stylesheet" href="/assets/tailwind.min.css">
+    <script src="/assets/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        input[type=range] { accent-color: #B23A0A; }
+    </style>
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50">
+
+    <header class="s3k-bar">
+        <div class="s3k-wrap">
+            <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="30" height="30"></picture><span>Surikata<em>3K</em></span></a>
+            <nav class="s3k-nav" aria-label="Site">
+                <a href="https://docs.surikata3k.com/">docs</a>
+                <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+                <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+                <a href="/" aria-current="true">apps</a>
+                <a href="mailto:hello@surikata3k.com">contact</a>
+            </nav>
+        </div>
+    </header>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-200">
+                    <i data-lucide="calculator" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="s3k-title text-3xl text-slate-900 leading-tight">Entropy calculator</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Combinations, entropy and brute-force time for a password</p>
+                </div>
+            </div>
+            <button id="resetBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <span>Reset</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Parameters -->
+        <section class="lg:col-span-5">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Parameters</h2>
+                </div>
+
+                <div class="p-4 flex flex-col gap-5">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="length" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Length</label>
+                            <input id="lengthNum" type="number" min="1" max="10000" value="12" aria-label="Exact length"
+                                class="w-20 px-2 py-0.5 text-right font-mono text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-md outline-none focus:ring-2 focus:ring-indigo-100">
+                        </div>
+                        <input id="length" type="range" min="1" max="64" value="12" class="w-full">
+                        <div class="flex justify-between text-[10px] text-slate-400 mt-1"><span>1</span><span>64 (or type more in the box)</span></div>
+                    </div>
+
+                    <div>
+                        <p class="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Character sets</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                                <input type="checkbox" id="lower" checked class="accent-indigo-600 w-4 h-4"> Lowercase <span class="ml-auto font-mono text-xs text-slate-400">26</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                                <input type="checkbox" id="upper" checked class="accent-indigo-600 w-4 h-4"> Uppercase <span class="ml-auto font-mono text-xs text-slate-400">26</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                                <input type="checkbox" id="numbers" checked class="accent-indigo-600 w-4 h-4"> Numbers <span class="ml-auto font-mono text-xs text-slate-400">10</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                                <input type="checkbox" id="symbols" class="accent-indigo-600 w-4 h-4"> Symbols <span id="symbolsCount" class="ml-auto font-mono text-xs text-slate-400">32</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="symbolsList" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Symbols (editable)</label>
+                        <input id="symbolsList" type="text" spellcheck="false" value="!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~"
+                            class="mt-1.5 w-full px-3 py-2.5 font-mono text-xs bg-slate-900/5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+                    </div>
+
+                    <div>
+                        <label for="speed" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Attacker speed</label>
+                        <select id="speed" class="mt-1.5 w-full px-3 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
+                            <option value="1000000">CPU — 10⁶ attempts/s</option>
+                            <option value="1000000000">Modern GPU — 10⁹ attempts/s</option>
+                            <option value="10000000000" selected>High-end home rig — 10¹⁰ attempts/s</option>
+                            <option value="100000000000000">Server farm or cluster — 10¹⁴ attempts/s</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Character set</span>
+                        <i data-lucide="type" class="w-4 h-4 text-blue-500"></i>
+                    </div>
+                    <div id="charsetSize" class="text-2xl font-bold text-slate-900">—</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">possible characters</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Entropy</span>
+                        <i data-lucide="sigma" class="w-4 h-4 text-indigo-500"></i>
+                    </div>
+                    <div id="entropy" class="text-2xl font-bold text-slate-900">—</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">bits</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Rating</span>
+                        <i data-lucide="gauge" class="w-4 h-4 text-amber-500"></i>
+                    </div>
+                    <div id="classification" class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">—</div>
+                    <p id="classificationDesc" class="text-[10px] text-slate-400 mt-1">—</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Average time</span>
+                        <i data-lucide="timer" class="w-4 h-4 text-emerald-500"></i>
+                    </div>
+                    <div id="timeAvgShort" class="text-base font-bold text-slate-900 leading-tight">—</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">to crack it</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Entropy bar</h2>
+                </div>
+                <div class="p-4">
+                    <div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div id="entropyBar" class="h-full rounded-full transition-all duration-300" style="width:0%"></div></div>
+                    <div class="relative h-4 mt-1 text-[10px] text-slate-400 font-mono">
+                        <span class="absolute left-0">0</span>
+                        <span class="absolute" style="left:21.9%">28</span>
+                        <span class="absolute" style="left:28.1%">36</span>
+                        <span class="absolute" style="left:46.9%">60</span>
+                        <span class="absolute right-0">128+ bits</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Detailed result</h2>
+                </div>
+                <div class="p-4 bg-slate-900">
+                    <pre id="detail" class="font-mono text-xs text-emerald-400 whitespace-pre-wrap leading-relaxed min-h-[100px]"></pre>
+                </div>
+                <p class="px-4 py-3 text-[11px] text-slate-400">Approximate results. Speeds are estimates and depend on the hardware and on the algorithm used to store the password.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- About this app and related apps -->
+    <section class="border-t border-slate-900 mt-10" aria-labelledby="info-title">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-700 leading-relaxed">
+            <h2 id="info-title" class="s3k-title text-4xl text-slate-900">How password entropy is calculated</h2>
+            <p class="mt-4">If a password has <em>L</em> characters chosen at random from <em>N</em> possible ones, there are <em>N<sup>L</sup></em> combinations and its entropy is <code>L × log₂(N)</code> bits. For example, 12 characters with lowercase, uppercase, numbers and 32 symbols (<em>N</em> = 94) give about 79 bits.</p>
+            <p class="mt-4">The average time to find it by brute force is half the combinations divided by the attacker’s speed. Change the speed, from an ordinary CPU to a server farm, to see how it affects the result.</p>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">Character set sizes</h3>
+            <ul class="mt-3 space-y-2 list-disc pl-5"><li>Lowercase only: 26 characters.</li><li>Lowercase and uppercase: 52.</li><li>Letters and numbers: 62.</li><li>Letters, numbers and ASCII symbols: 94.</li></ul>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">frequently asked questions</h3>
+            <div class="mt-3 divide-y divide-slate-200 border-y border-slate-200">
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">Which is safer, a longer password or one with more symbols?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">A longer one. Going from 62 to 94 possible characters adds about 0.6 bits per character; adding one more character adds about 6 bits.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">How many bits of entropy are enough?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">Below 36 bits is weak; from 60 bits it is considered strong, and 128 bits is out of reach of any brute-force attack.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">Does it work for a password I made up myself?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">Only as an upper limit, because the formula assumes random characters. For a specific password use the strength checker, which also spots weak patterns.</p></details>
+            </div>
+            <h2 class="mt-10 font-mono text-sm text-slate-500 lowercase">more apps you might like</h2>
+            <ul class="mt-3 grid gap-4 sm:grid-cols-2">
+                <li><a href="/password-strength-checker/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Password strength checker</span><span class="block mt-1 text-sm text-slate-600">See how strong a password is and spot weak patterns.</span></a></li>
+                <li><a href="/password-generator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Password generator</span><span class="block mt-1 text-sm text-slate-600">Strong random passwords with the length and characters you choose.</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="s3k-foot">
+        <div class="s3k-foot-wrap">
+            <div>
+                <p class="s3k-label">say hello</p>
+                <a class="s3k-mail" href="mailto:hello@surikata3k.com">hello@surikata3k.com</a>
+            </div>
+            <p class="s3k-legal">© 2026 Surikata3K · <a href="/">All apps</a> · <a href="https://surikata3k.com/">surikata3k.com</a><br>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
+        </div>
+    </footer>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        const DEFAULT_SYMBOLS = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+        const YEAR = 31536000;
+
+        function classify(bits) {
+            if (bits < 28)  return { label: 'Very weak',  pill: 'bg-rose-100 text-rose-700',       bar: '#e11d48', desc: 'Under 28 bits' };
+            if (bits < 36)  return { label: 'Weak',       pill: 'bg-orange-100 text-orange-700',   bar: '#f97316', desc: '28–35 bits' };
+            if (bits < 60)  return { label: 'Fair',       pill: 'bg-amber-100 text-amber-700',     bar: '#f59e0b', desc: '36–59 bits' };
+            if (bits < 128) return { label: 'Strong',     pill: 'bg-emerald-100 text-emerald-700', bar: '#10b981', desc: '60–127 bits' };
+            return             { label: 'Very strong',  pill: 'bg-teal-100 text-teal-700',       bar: '#0d9488', desc: '128 bits or more' };
+        }
+
+        function symbolCount() {
+            return new Set([...$('symbolsList').value].filter(c => c.trim() !== '')).size;
+        }
+
+        function formatCombinations(charset, length, entropy) {
+            const digits = entropy * Math.log10(2);
+            if (digits < 30) return (BigInt(charset) ** BigInt(length)).toLocaleString('en');
+            const p = Math.floor(digits);
+            return Math.pow(10, digits - p).toFixed(3) + ' × 10^' + p + '  (' + (p + 1).toLocaleString('en') + ' digits)';
+        }
+
+        function humanTime(log10s) {
+            if (log10s < -3) return 'under 1 ms';
+            if (log10s >= 15) {
+                const y = log10s - Math.log10(YEAR);
+                const p = Math.floor(y);
+                return '≈ ' + Math.pow(10, y - p).toFixed(2) + ' × 10^' + p + ' years';
+            }
+            const n = Math.pow(10, log10s);
+            if (n < 1) return (n * 1000).toFixed(1) + ' ms';
+            if (n < 60) return n.toFixed(1) + ' s';
+            if (n < 3600) return (n / 60).toFixed(1) + ' min';
+            if (n < 86400) return (n / 3600).toFixed(1) + ' h';
+            if (n < YEAR) return (n / 86400).toFixed(1) + ' days';
+            const years = n / YEAR;
+            if (years < 1e3) return years.toFixed(1) + ' years';
+            if (years < 1e6) return (years / 1e3).toFixed(1) + ' thousand years';
+            if (years < 1e9) return (years / 1e6).toFixed(1) + ' million years';
+            return (years / 1e9).toFixed(1) + ' billion years';
+        }
+
+        function compute() {
+            const length = Math.min(10000, Math.max(1, Math.floor(Number($('lengthNum').value) || 1)));
+            const symCount = symbolCount();
+            $('symbolsCount').textContent = symCount;
+
+            let charset = 0;
+            if ($('lower').checked) charset += 26;
+            if ($('upper').checked) charset += 26;
+            if ($('numbers').checked) charset += 10;
+            if ($('symbols').checked) charset += symCount;
+
+            $('charsetSize').textContent = charset;
+
+            if (!charset) {
+                $('entropy').textContent = '0';
+                $('classification').textContent = 'No character set';
+                $('classification').className = 'inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-700';
+                $('classificationDesc').textContent = 'Choose at least one character type';
+                $('entropyBar').style.width = '0%';
+                $('timeAvgShort').textContent = '—';
+                $('detail').textContent = '// Select at least one character set.';
+                return;
+            }
+
+            const entropy = length * Math.log2(charset);
+            const cls = classify(entropy);
+            $('entropy').textContent = entropy < 1000 ? entropy.toFixed(1) : Math.round(entropy).toLocaleString('en');
+            $('classification').textContent = cls.label;
+            $('classification').className = 'inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ' + cls.pill;
+            $('classificationDesc').textContent = cls.desc;
+            $('entropyBar').style.width = Math.max(2, Math.min(100, entropy / 128 * 100)) + '%';
+            $('entropyBar').style.background = cls.bar;
+
+            const speed = Number($('speed').value);
+            const log10Worst = entropy * Math.log10(2) - Math.log10(speed);
+            const avg = humanTime(log10Worst - Math.log10(2));
+            $('timeAvgShort').textContent = avg;
+
+            $('detail').textContent =
+                `Formula               : ${charset}^${length} combinations\n` +
+                `Possible combinations : ${formatCombinations(charset, length, entropy)}\n` +
+                `Entropy               : ${length} × log₂(${charset}) = ${entropy.toFixed(2)} bits\n` +
+                `Speed                 : ${speed.toLocaleString('en')} attempts/s\n` +
+                `Average time          : ${avg}\n` +
+                `Worst case            : ${humanTime(log10Worst)}`;
+        }
+
+        // Keep the length slider and box in sync
+        $('length').addEventListener('input', () => { $('lengthNum').value = $('length').value; compute(); });
+        $('lengthNum').addEventListener('input', () => {
+            const v = Number($('lengthNum').value);
+            if (v >= 1 && v <= 64) $('length').value = v;
+            compute();
+        });
+
+        ['lower', 'upper', 'numbers', 'symbols', 'speed'].forEach(id => $(id).addEventListener('change', compute));
+        let timer;
+        $('symbolsList').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(compute, 250); });
+
+        $('resetBtn').addEventListener('click', () => {
+            $('lower').checked = $('upper').checked = $('numbers').checked = true;
+            $('symbols').checked = false;
+            $('symbolsList').value = DEFAULT_SYMBOLS;
+            $('length').value = $('lengthNum').value = 12;
+            $('speed').value = '10000000000';
+            compute();
+        });
+
+        lucide.createIcons();
+        compute();
+    </script>
+</body>
+</html>

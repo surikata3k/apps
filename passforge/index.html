@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassForge: deterministic passwords from one master key · Surikata3K</title>
+    <meta name="description" content="Generate a different password for every site from a single master password, without storing anything (PBKDF2 in your browser).">
+    <link rel="canonical" href="https://apps.surikata3k.com/passforge/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Surikata3K">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:title" content="PassForge: deterministic passwords from one master key">
+    <meta property="og:description" content="Generate a different password for every site from a single master password, without storing anything (PBKDF2 in your browser).">
+    <meta property="og:url" content="https://apps.surikata3k.com/passforge/">
+    <meta property="og:image" content="https://apps.surikata3k.com/img/og/passforge.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#FBFBF9">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PassForge", "url": "https://apps.surikata3k.com/passforge/", "image": "https://apps.surikata3k.com/img/og/passforge.png", "description": "Generate a different password for every site from a single master password, without storing anything (PBKDF2 in your browser).", "applicationCategory": "EducationalApplication", "operatingSystem": "Any (web browser)", "inLanguage": "en", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en"}</script>
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+    <link rel="stylesheet" href="/assets/tailwind.min.css">
+    <script src="/assets/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        input[type=range] { accent-color: #B23A0A; }
+        .pw-out { word-break: break-all; }
+    </style>
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50">
+
+    <header class="s3k-bar">
+        <div class="s3k-wrap">
+            <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="30" height="30"></picture><span>Surikata<em>3K</em></span></a>
+            <nav class="s3k-nav" aria-label="Site">
+                <a href="https://docs.surikata3k.com/">docs</a>
+                <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+                <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+                <a href="/" aria-current="true">apps</a>
+                <a href="mailto:hello@surikata3k.com">contact</a>
+            </nav>
+        </div>
+    </header>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-200">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="s3k-title text-3xl text-slate-900 leading-tight">PassForge</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">One password per site from a single master key</p>
+                </div>
+            </div>
+            <button id="btnClear" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors">
+                <i data-lucide="eraser" class="w-4 h-4"></i>
+                <span>Clear all</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Input -->
+        <section class="lg:col-span-5">
+            <form id="form" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" autocomplete="off">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="key-round" class="w-5 h-5 text-indigo-600"></i>
+                        <h2 class="font-semibold text-slate-800 text-sm">Details</h2>
+                    </div>
+                    <span class="text-xs text-slate-400">100% local</span>
+                </div>
+
+                <div class="p-4 flex flex-col gap-4">
+                    <!-- Master password -->
+                    <div>
+                        <label for="master" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Master password</label>
+                        <div class="mt-1.5 relative">
+                            <input id="master" type="password" autocomplete="new-password" spellcheck="false" placeholder="Your secret key"
+                                class="w-full pl-3 pr-24 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+                            <div class="absolute inset-y-0 right-2 flex items-center gap-1">
+                                <span id="fingerprint" class="flex items-center gap-0.5" title="Visual fingerprint of the master password"></span>
+                                <button type="button" id="toggleMaster" class="p-1.5 rounded-md text-slate-400 hover:text-slate-700" title="Show or hide">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">The three icons are a fingerprint: if you always see the same ones, you typed it correctly.</p>
+                    </div>
+
+                    <!-- Site -->
+                    <div>
+                        <label for="site" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Website or service</label>
+                        <input id="site" type="text" spellcheck="false" placeholder="e.g. github.com, netflix, work"
+                            class="mt-1.5 w-full px-3 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+                        <p id="siteHint" class="text-[11px] text-slate-400 mt-1 min-h-[1rem]"></p>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="col-span-2">
+                            <label for="login" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Username <span class="normal-case font-normal text-slate-400">(optional)</span></label>
+                            <input id="login" type="text" spellcheck="false" placeholder="name or email"
+                                class="mt-1.5 w-full px-3 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="counter" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Version</label>
+                            <input id="counter" type="number" min="1" max="9999" value="1"
+                                class="mt-1.5 w-full px-3 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all">
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 -mt-2">Increase the version when a site forces you to change your password.</p>
+
+                    <!-- Options -->
+                    <div class="border-t border-dashed border-slate-200 pt-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="length" class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Length</label>
+                            <span id="lengthVal" class="font-mono text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-md px-2 py-0.5">20</span>
+                        </div>
+                        <input id="length" type="range" min="8" max="64" value="20" class="w-full">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                            <input type="checkbox" id="optLower" checked class="accent-indigo-600 w-4 h-4"> Lowercase <span class="ml-auto font-mono text-xs text-slate-400">a-z</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                            <input type="checkbox" id="optUpper" checked class="accent-indigo-600 w-4 h-4"> Uppercase <span class="ml-auto font-mono text-xs text-slate-400">A-Z</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                            <input type="checkbox" id="optDigits" checked class="accent-indigo-600 w-4 h-4"> Numbers <span class="ml-auto font-mono text-xs text-slate-400">0-9</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-indigo-300 cursor-pointer text-sm">
+                            <input type="checkbox" id="optSymbols" checked class="accent-indigo-600 w-4 h-4"> Symbols <span class="ml-auto font-mono text-xs text-slate-400">!@#</span>
+                        </label>
+                    </div>
+
+                    <div id="errorAlert" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2 text-rose-800 text-xs">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600 shrink-0"></i>
+                        <span id="errorMessage"></span>
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                    <button type="submit" id="btnGenerate" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-60 text-white font-medium text-sm rounded-xl shadow-md shadow-indigo-100 flex items-center justify-center gap-2 transition-all">
+                        <i data-lucide="wand-sparkles" class="w-4 h-4"></i>
+                        <span id="btnGenerateText">Generate password</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Result -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+                        <h2 class="font-semibold text-slate-800 text-sm">Password for <span id="resultSite" class="font-mono text-indigo-700">—</span></h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btnHide" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-sm transition-all active:scale-95">
+                            <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>
+                            <span id="btnHideText">Hide</span>
+                        </button>
+                        <button id="btnCopy" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-sm transition-all active:scale-95">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-5 bg-slate-900">
+                    <div id="password" class="pw-out font-mono text-lg sm:text-xl leading-relaxed text-slate-500 min-h-[2.5rem] selection:bg-indigo-500 selection:text-white" aria-live="polite">// Fill in the details and press “Generate password”</div>
+                </div>
+                <div class="h-1.5 bg-slate-100"><div id="strengthBar" class="h-full transition-all duration-300" style="width:0%"></div></div>
+                <p id="autoClear" class="hidden px-4 py-2 text-[11px] text-slate-400 bg-slate-50/50 border-t border-slate-100"></p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Entropy</span>
+                        <i data-lucide="sigma" class="w-4 h-4 text-indigo-500"></i>
+                    </div>
+                    <div id="kpiEntropy" class="text-2xl font-bold text-slate-900">—</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">approximate bits</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Strength</span>
+                        <i data-lucide="gauge" class="w-4 h-4 text-amber-500"></i>
+                    </div>
+                    <div id="kpiStrength" class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">Pending</div>
+                    <p class="text-[10px] text-slate-400 mt-1">based on entropy</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Iterations</span>
+                        <i data-lucide="repeat" class="w-4 h-4 text-blue-500"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-slate-900">600k</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">PBKDF2-SHA256</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-2">
+                        <span class="text-[11px] font-medium uppercase tracking-wider">Derivation</span>
+                        <i data-lucide="timer" class="w-4 h-4 text-emerald-500"></i>
+                    </div>
+                    <div id="kpiTime" class="text-2xl font-bold text-slate-900">—</div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">time on your device</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="info" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">How it works</h2>
+                </div>
+                <ul class="p-4 text-xs text-slate-600 leading-relaxed space-y-2">
+                    <li class="flex gap-2"><i data-lucide="repeat-2" class="w-4 h-4 text-indigo-500 shrink-0"></i><span>With the same details and options you always get the same password, on any device. There is no need to store it anywhere.</span></li>
+                    <li class="flex gap-2"><i data-lucide="lock" class="w-4 h-4 text-indigo-500 shrink-0"></i><span>The master key goes through <strong>PBKDF2-SHA256 with 600,000 iterations</strong>: every attempt to guess it is very expensive, even if someone obtains one of the generated passwords.</span></li>
+                    <li class="flex gap-2"><i data-lucide="notebook-pen" class="w-4 h-4 text-indigo-500 shrink-0"></i><span>If you change any detail or option (length, character types, username, version), the password changes. You can write down the options for each site: they are not secret.</span></li>
+                    <li class="flex gap-2"><i data-lucide="globe" class="w-4 h-4 text-indigo-500 shrink-0"></i><span>The site is normalised: <span class="font-mono">https://www.GitHub.com/login</span> i <span class="font-mono">github.com</span> give the same result.</span></li>
+                    <li class="flex gap-2"><i data-lucide="triangle-alert" class="w-4 h-4 text-amber-500 shrink-0"></i><span>If you forget the master key, there is no way to recover the passwords. Choose a long one that is easy to remember.</span></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- About this app and related apps -->
+    <section class="border-t border-slate-900 mt-10" aria-labelledby="info-title">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-700 leading-relaxed">
+            <h2 id="info-title" class="s3k-title text-4xl text-slate-900">Deterministic passwords: one master key for everything</h2>
+            <p class="mt-4">PassForge doesn’t store your passwords: it <strong>calculates</strong> them every time from your master key, the site name, the username and the version. The same details always give the same password, on any device, with nothing to sync and no server involved.</p>
+            <p class="mt-4">The derivation uses PBKDF2-SHA256 with 600,000 iterations, the value recommended by OWASP, so every attempt to guess the master key is expensive even if someone gets hold of one of the generated passwords.</p>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">Pros and cons</h3>
+            <ul class="mt-3 space-y-2 list-disc pl-5"><li><strong>Pro:</strong> there is no vault to steal and it works offline.</li><li><strong>Con:</strong> if you forget the master key, there is no way to recover the passwords.</li><li><strong>Con:</strong> if you change the master key, every password changes.</li></ul>
+            <h3 class="mt-10 font-mono text-sm text-slate-500 lowercase">frequently asked questions</h3>
+            <div class="mt-3 divide-y divide-slate-200 border-y border-slate-200">
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">How is it different from a password manager?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">A password manager keeps an encrypted vault of your passwords; PassForge stores nothing and regenerates them when you need them. In exchange, it can’t keep passwords you already had.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">What if a site forces me to change my password?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">Increase the version number for that site and generate a new one. Write down the version you use for each site: it isn’t secret.</p></details>
+                <details class="group py-3"><summary class="cursor-pointer font-medium text-slate-900 list-none flex justify-between gap-4">Is it safe to use on a website?<span class="text-slate-400 group-open:rotate-45 transition">+</span></summary><p class="mt-2 text-slate-600">All the work happens in your browser with the Web Crypto API: neither the master key nor the passwords ever leave your device.</p></details>
+            </div>
+            <h2 class="mt-10 font-mono text-sm text-slate-500 lowercase">more apps you might like</h2>
+            <ul class="mt-3 grid gap-4 sm:grid-cols-2">
+                <li><a href="/password-generator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Password generator</span><span class="block mt-1 text-sm text-slate-600">Strong random passwords with the length and characters you choose.</span></a></li>
+                <li><a href="/password-strength-checker/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Password strength checker</span><span class="block mt-1 text-sm text-slate-600">See how strong a password is and spot weak patterns.</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="s3k-foot">
+        <div class="s3k-foot-wrap">
+            <div>
+                <p class="s3k-label">say hello</p>
+                <a class="s3k-mail" href="mailto:hello@surikata3k.com">hello@surikata3k.com</a>
+            </div>
+            <p class="s3k-legal">© 2026 Surikata3K · <a href="/">All apps</a> · <a href="https://surikata3k.com/">surikata3k.com</a><br>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
+        </div>
+    </footer>
+
+    <div id="toast" class="fixed bottom-5 right-5 translate-y-20 opacity-0 transition-all duration-300 ease-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs z-50 pointer-events-none">
+        <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toastMessage">Copied</span>
+    </div>
+
+    <script>
+        /*
+         * PassForge v2
+         *  1. key = PBKDF2-SHA256(NFC master, salt = "passforge-v2" ␟ site ␟ user ␟ version, 600,000 iterations, 256 bits)
+         *  2. byte stream = HMAC-SHA256(key, 32-bit block counter)
+         *  3. one character of each chosen type + the rest from the full set, with rejection sampling (no bias)
+         *  4. deterministic Fisher-Yates shuffle with the same stream
+         */
+        const VERSION_TAG = 'passforge-v2';
+        const ITERATIONS = 600000;
+        const SETS = {
+            lower:   'abcdefghijklmnopqrstuvwxyz',
+            upper:   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            digits:  '0123456789',
+            symbols: '!@#$%^&*()-_=+[]{}|;:,.<>?'
+        };
+        const AUTO_CLEAR_SECONDS = 60;
+
+        const $ = id => document.getElementById(id);
+        const enc = new TextEncoder();
+
+        function normalizeSite(raw) {
+            let s = raw.trim().toLowerCase();
+            s = s.replace(/^[a-z][a-z0-9+.-]*:\/\//, '');  // protocol
+            s = s.split(/[\/?#]/)[0];                        // path and parameters
+            s = s.replace(/^[^@]*@/, '');                    // user@ inside the URL
+            s = s.replace(/:\d+$/, '');                      // port
+            s = s.replace(/^www\d*\./, '');                  // www.
+            return s;
+        }
+
+        class ByteStream {
+            constructor(hmacKey) { this.key = hmacKey; this.block = 0; this.buf = new Uint8Array(0); this.pos = 0; }
+            async byte() {
+                if (this.pos >= this.buf.length) {
+                    const info = new Uint8Array(4);
+                    new DataView(info.buffer).setUint32(0, this.block++);
+                    this.buf = new Uint8Array(await crypto.subtle.sign('HMAC', this.key, info));
+                    this.pos = 0;
+                }
+                return this.buf[this.pos++];
+            }
+            async int(n) {                       // uniform in [0, n), n <= 256
+                const limit = 256 - (256 % n);
+                let b;
+                do { b = await this.byte(); } while (b >= limit);
+                return b % n;
+            }
+        }
+
+        async function derivePassword({ master, site, login, counter, length, sets }) {
+            const baseKey = await crypto.subtle.importKey('raw', enc.encode(master.normalize('NFC')), 'PBKDF2', false, ['deriveBits']);
+            const salt = enc.encode([VERSION_TAG, site, login, String(counter)].join('\u001f'));
+            const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: ITERATIONS, hash: 'SHA-256' }, baseKey, 256);
+            const hmacKey = await crypto.subtle.importKey('raw', bits, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+            const stream = new ByteStream(hmacKey);
+
+            const all = sets.join('');
+            const chars = [];
+            for (const s of sets) chars.push(s[await stream.int(s.length)]);
+            while (chars.length < length) chars.push(all[await stream.int(all.length)]);
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = await stream.int(i + 1);
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            return chars.join('');
+        }
+
+        // ---------- Visual fingerprint of the master password ----------
+        const FP_ICONS = ['heart', 'star', 'sun', 'moon', 'cloud', 'leaf', 'anchor', 'bell', 'flame', 'gem', 'music', 'umbrella', 'zap', 'feather', 'coffee', 'rocket'];
+        const FP_COLORS = ['#e11d48', '#ea580c', '#ca8a04', '#16a34a', '#0891b2', '#2563eb', '#7c3aed', '#db2777'];
+        let fpTimer;
+        async function updateFingerprint() {
+            const box = $('fingerprint');
+            const master = $('master').value;
+            if (!master) { box.innerHTML = ''; return; }
+            const h = new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode('passforge-fp\u001f' + master.normalize('NFC'))));
+            box.innerHTML = [0, 1, 2].map(i =>
+                `<i data-lucide="${FP_ICONS[h[i] % FP_ICONS.length]}" class="w-4 h-4" style="color:${FP_COLORS[h[i + 3] % FP_COLORS.length]}"></i>`
+            ).join('');
+            lucide.createIcons();
+        }
+
+        // ---------- Interface ----------
+        function classify(bits) {
+            if (bits < 28)  return { label: 'Very weak',  pill: 'bg-rose-100 text-rose-700',       bar: '#e11d48' };
+            if (bits < 36)  return { label: 'Weak',       pill: 'bg-orange-100 text-orange-700',   bar: '#f97316' };
+            if (bits < 60)  return { label: 'Fair',       pill: 'bg-amber-100 text-amber-700',     bar: '#f59e0b' };
+            if (bits < 128) return { label: 'Strong',     pill: 'bg-emerald-100 text-emerald-700', bar: '#10b981' };
+            return             { label: 'Very strong',  pill: 'bg-teal-100 text-teal-700',       bar: '#0d9488' };
+        }
+
+        function activeSets() {
+            return [['optLower', 'lower'], ['optUpper', 'upper'], ['optDigits', 'digits'], ['optSymbols', 'symbols']]
+                .filter(([id]) => $(id).checked).map(([, k]) => SETS[k]);
+        }
+
+        function showError(msg) {
+            $('errorMessage').textContent = msg;
+            $('errorAlert').classList.remove('hidden');
+        }
+
+        let current = '';
+        let hidden = false;
+        let clearTimer;
+
+        function renderPassword() {
+            const box = $('password');
+            box.textContent = '';
+            if (!current) return;
+            if (hidden) {
+                box.className = 'pw-out font-mono text-lg sm:text-xl leading-relaxed text-slate-500 min-h-[2.5rem]';
+                box.textContent = '•'.repeat(current.length);
+                return;
+            }
+            box.className = 'pw-out font-mono text-lg sm:text-xl leading-relaxed min-h-[2.5rem] selection:bg-indigo-500 selection:text-white';
+            for (const c of current) {
+                const s = document.createElement('span');
+                s.textContent = c;
+                s.className = /[a-zA-Z]/.test(c) ? 'text-emerald-400' : /\d/.test(c) ? 'text-sky-400' : 'text-amber-400';
+                box.appendChild(s);
+            }
+        }
+
+        function resetResult(message) {
+            current = '';
+            clearInterval(clearTimer);
+            $('autoClear').classList.add('hidden');
+            const box = $('password');
+            box.className = 'pw-out font-mono text-lg sm:text-xl leading-relaxed text-slate-500 min-h-[2.5rem]';
+            box.textContent = message;
+            $('resultSite').textContent = '—';
+            $('kpiEntropy').textContent = '—';
+            $('kpiStrength').textContent = 'Pending';
+            $('kpiStrength').className = 'inline-flex px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600';
+            $('strengthBar').style.width = '0%';
+        }
+
+        function startAutoClear() {
+            let left = AUTO_CLEAR_SECONDS;
+            const note = $('autoClear');
+            note.classList.remove('hidden');
+            note.textContent = `For security, the result will be cleared in ${left} s.`;
+            clearInterval(clearTimer);
+            clearTimer = setInterval(() => {
+                left--;
+                if (left <= 0) { resetResult('// Result cleared. Generate it again if you need it.'); return; }
+                note.textContent = `For security, the result will be cleared in ${left} s.`;
+            }, 1000);
+        }
+
+        async function generate(e) {
+            e?.preventDefault();
+            $('errorAlert').classList.add('hidden');
+
+            const master = $('master').value;
+            const site = normalizeSite($('site').value);
+            const login = $('login').value.trim().toLowerCase();
+            const counter = Math.max(1, Math.floor(Number($('counter').value) || 1));
+            const length = Number($('length').value);
+            const sets = activeSets();
+
+            if (!master) return showError('Enter the master password.');
+            if (!site) return showError('Enter the website or service.');
+            if (!sets.length) return showError('Select at least one character type.');
+            if (master.length < 8) showError('Tip: a master password shorter than 8 characters is easy to guess.');
+
+            const btn = $('btnGenerate');
+            btn.disabled = true;
+            $('btnGenerateText').textContent = 'Deriving…';
+            const t0 = performance.now();
+            try {
+                current = await derivePassword({ master, site, login, counter, length, sets });
+            } catch (err) {
+                console.error(err);
+                showError('Could not generate the password. Does this browser support Web Crypto?');
+                current = '';
+            }
+            const ms = performance.now() - t0;
+            btn.disabled = false;
+            $('btnGenerateText').textContent = 'Generate password';
+            if (!current) return;
+
+            hidden = false;
+            $('btnHideText').textContent = 'Hide';
+            renderPassword();
+            $('resultSite').textContent = site + (login ? ` · ${login}` : '') + (counter > 1 ? ` · v${counter}` : '');
+
+            const bits = length * Math.log2(sets.join('').length);
+            const cls = classify(bits);
+            $('kpiEntropy').textContent = Math.round(bits);
+            $('kpiStrength').textContent = cls.label;
+            $('kpiStrength').className = 'inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ' + cls.pill;
+            $('strengthBar').style.width = Math.min(100, bits / 128 * 100) + '%';
+            $('strengthBar').style.background = cls.bar;
+            $('kpiTime').textContent = ms < 1000 ? Math.round(ms) + ' ms' : (ms / 1000).toFixed(1) + ' s';
+            startAutoClear();
+        }
+
+        function showToast(msg) {
+            const t = $('toast');
+            $('toastMessage').textContent = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 1800);
+        }
+
+        // ---------- Events ----------
+        $('form').addEventListener('submit', generate);
+
+        $('length').addEventListener('input', () => { $('lengthVal').textContent = $('length').value; });
+
+        // Any change invalidates the previous result, to avoid confusion
+        ['master', 'site', 'login', 'counter', 'length', 'optLower', 'optUpper', 'optDigits', 'optSymbols'].forEach(id => {
+            $(id).addEventListener('input', () => { if (current) resetResult('// The details have changed: generate the password again.'); });
+        });
+
+        $('master').addEventListener('input', () => { clearTimeout(fpTimer); fpTimer = setTimeout(updateFingerprint, 400); });
+
+        $('site').addEventListener('input', () => {
+            const raw = $('site').value.trim();
+            const norm = normalizeSite(raw);
+            $('siteHint').textContent = raw && norm !== raw ? `Will use: ${norm}` : '';
+        });
+
+        $('toggleMaster').addEventListener('click', () => {
+            const input = $('master');
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            $('toggleMaster').innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}" class="w-4 h-4"></i>`;
+            lucide.createIcons();
+        });
+
+        $('btnHide').addEventListener('click', () => {
+            if (!current) return;
+            hidden = !hidden;
+            $('btnHideText').textContent = hidden ? 'Show' : 'Hide';
+            renderPassword();
+        });
+
+        $('btnCopy').addEventListener('click', async () => {
+            if (!current) return;
+            try {
+                await navigator.clipboard.writeText(current);
+                showToast('Password copied');
+            } catch {
+                showToast('Could not copy');
+            }
+        });
+
+        $('btnClear').addEventListener('click', () => {
+            $('form').reset();
+            $('lengthVal').textContent = $('length').value;
+            $('siteHint').textContent = '';
+            $('fingerprint').innerHTML = '';
+            $('errorAlert').classList.add('hidden');
+            $('kpiTime').textContent = '—';
+            resetResult('// Fill in the details and press “Generate password”');
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

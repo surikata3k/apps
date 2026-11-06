@@ -1,0 +1,46 @@
+/* Shared look for every app, matching the surikata3k.com home page. */
+:root {
+  --s3k-bg: #FBFBF9;
+  --s3k-ink: #111111;
+  --s3k-muted: #555550;
+  --s3k-rule: #D9D8D2;
+  --s3k-accent: #B23A0A;
+  --s3k-serif: 'Instrument Serif', Georgia, serif;
+  --s3k-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --s3k-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+body { background: var(--s3k-bg); }
+
+/* Site bar shared with the home page */
+.s3k-bar { background: var(--s3k-bg); border-bottom: 1px solid var(--s3k-ink); font-family: var(--s3k-sans); }
+.s3k-wrap { max-width: 72rem; margin: 0 auto; padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; }
+.s3k-brand { display: flex; align-items: center; gap: 10px; color: var(--s3k-ink); text-decoration: none; }
+.s3k-brand img { width: 30px; height: 30px; object-fit: contain; }
+.s3k-brand span { font-family: var(--s3k-serif); font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
+.s3k-brand em { color: var(--s3k-accent); }
+.s3k-nav { display: flex; flex-wrap: wrap; gap: 4px 22px; font-family: var(--s3k-mono); font-size: 13px; }
+.s3k-nav a { color: var(--s3k-ink); text-decoration: none; padding: 8px 0; }
+.s3k-nav a:hover, .s3k-brand:hover em { color: var(--s3k-accent); }
+.s3k-nav a:focus-visible, .s3k-brand:focus-visible { outline: 2px solid var(--s3k-accent); outline-offset: 3px; }
+
+@media (min-width: 640px) { .s3k-wrap { padding: 14px 24px; } }
+@media (min-width: 1024px) { .s3k-wrap { padding: 14px 32px; } }
+
+/* App titles use the home page serif */
+.s3k-title { font-family: var(--s3k-serif) !important; font-weight: 400 !important; letter-spacing: -0.01em; }
+
+.s3k-nav a[aria-current] { color: var(--s3k-accent); }
+
+/* Site footer shared with the home page: contact address, licence and links */
+.s3k-foot { background: var(--s3k-bg); border-top: 1px solid var(--s3k-ink); font-family: var(--s3k-sans); color: var(--s3k-ink); margin-top: 48px; }
+.s3k-foot-wrap { max-width: 72rem; margin: 0 auto; padding: 32px 16px 44px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 48px; }
+.s3k-foot .s3k-label { margin: 0 0 6px; font-family: var(--s3k-mono); font-size: 13px; color: var(--s3k-muted); text-transform: lowercase; }
+.s3k-foot .s3k-mail { font-family: var(--s3k-serif); font-size: clamp(28px, 4vw, 40px); line-height: 1.1; color: var(--s3k-ink); text-decoration: none; }
+.s3k-foot .s3k-mail:hover { color: var(--s3k-accent); }
+.s3k-foot .s3k-legal { margin: 0; max-width: 460px; font-size: 13px; line-height: 1.6; color: var(--s3k-muted); }
+.s3k-foot .s3k-legal a { color: var(--s3k-muted); text-decoration: underline; }
+.s3k-foot .s3k-legal a:hover { color: var(--s3k-accent); }
+.s3k-foot a:focus-visible { outline: 2px solid var(--s3k-accent); outline-offset: 3px; }
+@media (min-width: 640px) { .s3k-foot-wrap { padding: 32px 24px 44px; } }
+@media (min-width: 1024px) { .s3k-foot-wrap { padding: 32px 32px 44px; } }

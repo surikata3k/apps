@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The maths of RSA, step by step: keys, encryption and signatures · Surikata3K</title>
+    <meta name="description" content="Learn how RSA works: generate a key pair, encrypt, sign and try to break it, step by step and with small numbers.">
+    <link rel="canonical" href="https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Surikata3K">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:title" content="The maths of RSA, step by step: keys, encryption and signatures">
+    <meta property="og:description" content="Learn how RSA works: generate a key pair, encrypt, sign and try to break it, step by step and with small numbers.">
+    <meta property="og:url" content="https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html">
+    <meta property="og:image" content="https://apps.surikata3k.com/img/og/rsa-math.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#FBFBF9">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "The maths of RSA", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html", "description": "Learn how RSA works: generate a key pair, encrypt, sign and try to break it, step by step and with small numbers.", "inLanguage": "en", "image": "https://apps.surikata3k.com/img/og/rsa-math.png", "learningResourceType": "Interactive simulation", "isPartOf": {"@type": "WebApplication", "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/"}}</script>
+    <link rel="icon" href="/img/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+    <link rel="stylesheet" href="/assets/tailwind.min.css">
+    <script src="/assets/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .tab[aria-selected="true"] { background: #B23A0A; color: #fff; border-color: #B23A0A; }
+        .tab[aria-selected="true"] .tab-num { background: #fff; color: #B23A0A; }
+        .pub { color: #047857; background: #ecfdf5; border-color: #a7f3d0; }
+        .priv { color: #be123c; background: #fff1f2; border-color: #fecdd3; }
+        .chip { display: inline-flex; align-items: center; gap: .3rem; border: 1px solid; border-radius: .5rem; padding: .05rem .45rem; font-family: 'JetBrains Mono', monospace; font-size: .8rem; white-space: nowrap; }
+        .num-strip span { display: inline-block; margin: 0 .35rem .35rem 0; padding: .1rem .4rem; border-radius: .35rem; background: #f1f5f9; }
+        @keyframes travel { from { left: 0; } to { left: calc(100% - 1.75rem); } }
+        .packet { animation: travel 1.4s ease-in-out forwards; }
+        @media (prefers-reduced-motion: reduce) { .packet { animation: none; left: calc(100% - 1.75rem); } }
+    </style>
+    <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50">
+
+    <header class="s3k-bar">
+        <div class="s3k-wrap">
+            <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="30" height="30"></picture><span>Surikata<em>3K</em></span></a>
+            <nav class="s3k-nav" aria-label="Site">
+                <a href="https://docs.surikata3k.com/">docs</a>
+                <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+                <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+                <a href="/" aria-current="true">apps</a>
+                <a href="mailto:hello@surikata3k.com">contact</a>
+            </nav>
+        </div>
+    </header>
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-200">
+                    <i data-lucide="key-round" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="s3k-title text-3xl text-slate-900 leading-tight">The maths of RSA</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block"><a href="./" class="hover:text-indigo-600">← Back to the simulator</a> · The numbers behind it</p>
+                </div>
+            </div>
+            <button id="btnNewKeys" aria-label="New keys" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors">
+                <i data-lucide="dices" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">New keys</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+        <!-- Characters -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4" aria-label="Characters">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex gap-3">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-sky-100 text-sky-700 grid place-items-center"><i data-lucide="user" class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="font-semibold text-slate-900">Anna</h2>
+                    <p class="text-sm text-slate-600">Wants to send a secret message to Biel.</p>
+                    <p class="mt-1.5 text-xs text-slate-500">Has: <span class="chip pub"><i data-lucide="lock-open" class="w-3 h-3"></i>Biel’s public key</span></p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex gap-3">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-amber-100 text-amber-700 grid place-items-center"><i data-lucide="eye" class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="font-semibold text-slate-900">Eve</h2>
+                    <p class="text-sm text-slate-600">Listens to everything on the channel (the network).</p>
+                    <p class="mt-1.5 text-xs text-slate-500">Has: <span class="chip pub"><i data-lucide="lock-open" class="w-3 h-3"></i>Biel’s public key</span></p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 flex gap-3">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-violet-100 text-violet-700 grid place-items-center"><i data-lucide="user" class="w-6 h-6"></i></div>
+                <div>
+                    <h2 class="font-semibold text-slate-900">Biel</h2>
+                    <p class="text-sm text-slate-600">Has generated a key pair.</p>
+                    <p class="mt-1.5 text-xs text-slate-500 flex flex-wrap gap-1 items-center">Has: <span class="chip pub"><i data-lucide="lock-open" class="w-3 h-3"></i>public</span> <span class="chip priv"><i data-lucide="key" class="w-3 h-3"></i>private</span></p>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 text-sm text-indigo-900 flex gap-3">
+            <i data-lucide="lightbulb" class="w-5 h-5 shrink-0 text-indigo-600 mt-0.5"></i>
+            <p><strong>The idea in one sentence:</strong> the public key is like an <strong>open padlock</strong> that Biel hands out to everyone; anyone can lock it, but only <strong>private key</strong> of Biel’s opens it. The two keys are linked mathematically, but the private key cannot be worked out from the public one.</p>
+        </div>
+
+        <!-- Tabs -->
+        <nav class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="Steps">
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="keys" aria-selected="true"><span class="tab-num w-6 h-6 rounded-full bg-slate-100 grid place-items-center text-xs">1</span>The keys</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="encrypt" aria-selected="false"><span class="tab-num w-6 h-6 rounded-full bg-slate-100 grid place-items-center text-xs">2</span>Encrypt</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="sign" aria-selected="false"><span class="tab-num w-6 h-6 rounded-full bg-slate-100 grid place-items-center text-xs">3</span>Sign</button>
+            <button class="tab flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-indigo-300" role="tab" data-tab="break" aria-selected="false"><span class="tab-num w-6 h-6 rounded-full bg-slate-100 grid place-items-center text-xs">4</span>Break it?</button>
+        </nav>
+
+        <!-- 1. KEYS -->
+        <section id="panel-keys" class="panel grid grid-cols-1 lg:grid-cols-12 gap-6" role="tabpanel">
+            <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="settings-2" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Biel generates his keys</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <p class="text-sm text-slate-600">Pick two different prime numbers. In real life they have hundreds of digits; here they are small so you can follow the calculations.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Prime p
+                            <select id="selP" class="mt-1 w-full font-mono text-sm bg-white rounded-xl border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none"></select>
+                        </label>
+                        <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Prime q
+                            <select id="selQ" class="mt-1 w-full font-mono text-sm bg-white rounded-xl border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none"></select>
+                        </label>
+                    </div>
+                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Public exponent e
+                        <select id="selE" class="mt-1 w-full font-mono text-sm bg-white rounded-xl border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none"></select>
+                        <span class="block mt-1 normal-case tracking-normal font-normal text-slate-500">Must be coprime with φ(n). In practice it is almost always 65537.</span>
+                    </label>
+                    <p id="pqWarn" class="hidden text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">p and q must be different.</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 flex flex-col gap-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-5 h-5 text-indigo-600"></i>
+                        <h2 class="font-semibold text-slate-800 text-sm">The calculations, step by step</h2>
+                    </div>
+                    <ol id="keySteps" class="p-5 flex flex-col gap-3 text-sm"></ol>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-4">
+                        <div class="flex items-center gap-2 text-emerald-800 font-semibold"><i data-lucide="lock-open" class="w-5 h-5"></i>Public key</div>
+                        <div id="pubKey" class="mt-2 font-mono text-xl font-semibold text-emerald-900"></div>
+                        <p class="mt-1 text-xs text-emerald-800">Biel publishes it: anyone can have it, Eve included.</p>
+                    </div>
+                    <div class="rounded-2xl border-2 border-rose-200 bg-rose-50 p-4">
+                        <div class="flex items-center gap-2 text-rose-800 font-semibold"><i data-lucide="key" class="w-5 h-5"></i>Private key</div>
+                        <div id="privKey" class="mt-2 font-mono text-xl font-semibold text-rose-900"></div>
+                        <p class="mt-1 text-xs text-rose-800">Only Biel has it. It never leaves his computer.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ENCRYPT -->
+        <section id="panel-encrypt" class="panel hidden flex-col gap-6" role="tabpanel">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="mail" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Anna sends Biel a secret message</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input id="msgIn" maxlength="40" value="Hi Biel! See you at 5."
+                            class="flex-1 px-3 py-3 font-mono text-sm bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none" aria-label="Anna’s message">
+                        <button id="btnSend" class="inline-flex justify-center items-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm">
+                            <i data-lucide="send" class="w-4 h-4"></i>Encrypt and send
+                        </button>
+                    </div>
+
+                    <!-- Flow -->
+                    <div class="grid grid-cols-1 md:grid-cols-[1fr_1.4fr_1fr] gap-3 items-stretch">
+                        <div class="rounded-xl border border-sky-200 bg-sky-50 p-3">
+                            <div class="flex items-center gap-2 text-sky-800 text-sm font-semibold"><i data-lucide="user" class="w-4 h-4"></i>Anna</div>
+                            <p class="mt-1 text-xs text-sky-900">Encrypts with the <span class="chip pub"><i data-lucide="lock-open" class="w-3 h-3"></i>Biel’s public key</span></p>
+                            <p class="mt-2 font-mono text-xs text-sky-900">c = m<sup>e</sup> mod n</p>
+                        </div>
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 p-3">
+                            <div class="flex items-center gap-2 text-amber-800 text-sm font-semibold"><i data-lucide="eye" class="w-4 h-4"></i>Channel (Eve listens)</div>
+                            <div class="relative h-7 mt-2 rounded-full bg-amber-100 overflow-hidden" aria-hidden="true">
+                                <div class="absolute inset-y-0 left-3 right-3 my-auto h-0.5 bg-amber-300"></div>
+                                <div id="packet" class="absolute top-0 w-7 h-7 rounded-full bg-amber-500 text-white grid place-items-center" style="left:0"><i data-lucide="lock" class="w-3.5 h-3.5"></i></div>
+                            </div>
+                            <p class="mt-2 text-xs text-amber-900">Only numbers travel over the channel. Eve sees them all.</p>
+                        </div>
+                        <div class="rounded-xl border border-violet-200 bg-violet-50 p-3">
+                            <div class="flex items-center gap-2 text-violet-800 text-sm font-semibold"><i data-lucide="user" class="w-4 h-4"></i>Biel</div>
+                            <p class="mt-1 text-xs text-violet-900">Decrypts with his <span class="chip priv"><i data-lucide="key" class="w-3 h-3"></i>private</span></p>
+                            <p class="mt-2 font-mono text-xs text-violet-900">m = c<sup>d</sup> mod n</p>
+                        </div>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="rounded-xl border border-slate-200 p-3">
+                            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">What travels over the channel</div>
+                            <div id="cipherStrip" class="num-strip mt-2 font-mono text-sm text-slate-800"></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="rounded-xl border border-amber-200 bg-amber-50/60 p-3">
+                                <div class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Eve tries the public key</div>
+                                <div id="evaText" class="mt-2 font-mono text-base text-amber-900 break-all"></div>
+                                <p class="mt-1 text-xs text-amber-800">The public key encrypts but doesn’t decrypt: you get garbage.</p>
+                            </div>
+                            <div class="rounded-xl border border-violet-200 bg-violet-50/60 p-3">
+                                <div class="text-xs font-semibold text-violet-800 uppercase tracking-wider">Biel decrypts with the private key</div>
+                                <div id="bielText" class="mt-2 font-mono text-base text-violet-900 break-all"></div>
+                                <p class="mt-1 text-xs text-violet-800">He gets back exactly the original message.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="table" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Byte a byte</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="text-xs text-slate-500 uppercase tracking-wider bg-slate-50">
+                            <tr>
+                                <th class="text-left font-semibold px-4 py-2">Character</th>
+                                <th class="text-right font-semibold px-4 py-2">m (byte)</th>
+                                <th class="text-right font-semibold px-4 py-2 text-emerald-700">c = m<sup>e</sup> mod n</th>
+                                <th class="text-right font-semibold px-4 py-2 text-amber-700">c<sup>e</sup> mod n (Eve)</th>
+                                <th class="text-right font-semibold px-4 py-2 text-rose-700">c<sup>d</sup> mod n (Biel)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byteRows" class="divide-y divide-slate-100 font-mono"></tbody>
+                    </table>
+                </div>
+                <p class="px-4 pt-3 text-xs text-amber-800"><strong>Notice:</strong> the same letter always gives the same number (look at the spaces). So Eve could guess the text from letter frequencies, like a substitution cipher.</p>
+                <p class="px-4 pb-3 pt-1 text-xs text-slate-500">Here each byte is encrypted separately so you can see the calculation. To avoid this, real systems encrypt large blocks with random padding (OAEP) and usually use RSA only to send a symmetric key (AES) that encrypts the rest.</p>
+            </div>
+        </section>
+
+        <!-- 3. SIGN -->
+        <section id="panel-sign" class="panel hidden grid-cols-1 lg:grid-cols-2 gap-6" role="tabpanel">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="pen-line" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Biel signs a notice</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <p class="text-sm text-slate-600">Now we use the keys the other way round: Biel <strong>signs with the private key</strong> and anyone can <strong>check it with the public key</strong>. That way everyone knows the message is his and that nobody has changed it.</p>
+                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Biel’s original message
+                        <input id="signIn" maxlength="40" value="No class tomorrow."
+                            class="mt-1 w-full px-3 py-3 font-mono text-sm normal-case tracking-normal font-normal bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
+                    </label>
+                    <ol class="flex flex-col gap-2 text-sm">
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-xs font-bold">1</span><span>Calculates the digest (hash) of the message: <span id="hOrig" class="chip border-slate-200 bg-slate-50"></span></span></li>
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-xs font-bold">2</span><span>Encrypts the digest with his private key: <span id="sigCalc" class="font-mono text-xs"></span></span></li>
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-xs font-bold">3</span><span>Sends the message + the signature <span id="sigVal" class="chip priv"></span></span></li>
+                    </ol>
+                    <p class="text-xs text-slate-500">The digest in this simulator is a toy function. In reality SHA-256 is used, where it is practically impossible to find two messages with the same digest.</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="badge-check" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Anna checks the signature</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Message that reaches Anna
+                        <input id="signRecv" maxlength="40"
+                            class="mt-1 w-full px-3 py-3 font-mono text-sm normal-case tracking-normal font-normal bg-white rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none">
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="btnTamper" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg"><i data-lucide="eye" class="w-4 h-4"></i>Eve changes the message</button>
+                        <button id="btnRestore" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg"><i data-lucide="rotate-ccw" class="w-4 h-4"></i>Original message</button>
+                    </div>
+                    <ol class="flex flex-col gap-2 text-sm">
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-sky-100 text-sky-700 grid place-items-center text-xs font-bold">1</span><span>Digest of the received message: <span id="hRecv" class="chip border-slate-200 bg-slate-50"></span></span></li>
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-sky-100 text-sky-700 grid place-items-center text-xs font-bold">2</span><span>Opens the signature with Biel’s public key: <span id="verCalc" class="font-mono text-xs"></span></span></li>
+                        <li class="flex gap-2"><span class="w-5 h-5 shrink-0 rounded-full bg-sky-100 text-sky-700 grid place-items-center text-xs font-bold">3</span><span>Compares the two digests.</span></li>
+                    </ol>
+                    <div id="verdict" class="rounded-xl border-2 p-4 flex gap-3 items-start"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. BREAK -->
+        <section id="panel-break" class="panel hidden grid-cols-1 lg:grid-cols-2 gap-6" role="tabpanel">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="hammer" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Eve tries to get the private key</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                    <p class="text-sm text-slate-600">Eve knows <span id="evaKnows" class="chip pub"></span>. To calculate d she needs φ(n), and for that she has to split n into its two primes p and q. She tries dividing n by 2, 3, 5, 7…</p>
+                    <button id="btnFactor" class="self-start inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold shadow-sm"><i data-lucide="zap" class="w-4 h-4"></i>Factor n</button>
+                    <div class="bg-slate-900 rounded-xl p-4 min-h-[9rem]">
+                        <pre id="factorLog" class="font-mono text-xs text-emerald-400 whitespace-pre-wrap leading-relaxed">// Press “Factor n” to see the attack...</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+                    <i data-lucide="shield" class="w-5 h-5 text-indigo-600"></i>
+                    <h2 class="font-semibold text-slate-800 text-sm">Why is it safe in real life?</h2>
+                </div>
+                <div class="p-5 flex flex-col gap-4 text-sm text-slate-700">
+                    <p>Multiplying two primes is instant; finding them from the product is very hard when they are large. All of RSA’s security rests on that difference.</p>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-sm">
+                            <thead class="text-xs text-slate-500 uppercase tracking-wider bg-slate-50">
+                                <tr><th class="text-left font-semibold px-3 py-2">Size of n</th><th class="text-left font-semibold px-3 py-2">Digits</th><th class="text-left font-semibold px-3 py-2">Status</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="px-3 py-2 font-mono" id="toyBits"></td><td class="px-3 py-2 font-mono" id="toyDigits"></td><td class="px-3 py-2">This simulator: broken in milliseconds.</td></tr>
+                                <tr><td class="px-3 py-2 font-mono">512 bits</td><td class="px-3 py-2 font-mono">155</td><td class="px-3 py-2">Factored in 1999 with hundreds of computers over months. Insecure today.</td></tr>
+                                <tr><td class="px-3 py-2 font-mono">829 bits</td><td class="px-3 py-2 font-mono">250</td><td class="px-3 py-2">The public record (2020): thousands of CPU-years.</td></tr>
+                                <tr class="bg-emerald-50"><td class="px-3 py-2 font-mono">2048 bits</td><td class="px-3 py-2 font-mono">617</td><td class="px-3 py-2">Minimum recommended size today. Out of reach of current computers.</td></tr>
+                                <tr class="bg-emerald-50"><td class="px-3 py-2 font-mono">4096 bits</td><td class="px-3 py-2 font-mono">1233</td><td class="px-3 py-2">More margin, at the cost of being slower.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-slate-500">A large enough quantum computer could factor n with Shor’s algorithm. That is why post-quantum algorithms (such as ML-KEM) that don’t rely on this problem are already being adopted.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- About this app and related apps -->
+    <section class="border-t border-slate-900 mt-10" aria-labelledby="info-title">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-slate-700 leading-relaxed">
+            <h2 id="info-title" class="font-mono text-sm text-slate-500 lowercase">learn more</h2>
+            <ul class="mt-3 space-y-1 list-disc pl-5"><li><a href="https://docs.surikata3k.com/guides/asymmetric_encryption/" class="text-indigo-700 underline hover:text-indigo-900">Asymmetric encryption guide in the docs</a></li></ul>
+            <h2 class="mt-10 font-mono text-sm text-slate-500 lowercase">more apps you might like</h2>
+            <ul class="mt-3 grid gap-4 sm:grid-cols-2">
+                <li><a href="/asymmetric-key-simulator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Asymmetric key simulator</span><span class="block mt-1 text-sm text-slate-600">Padlocks and keys to understand public-key cryptography.</span></a></li>
+                <li><a href="/blockchain-simulator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Blockchain simulator</span><span class="block mt-1 text-sm text-slate-600">Hashing, blocks, mining and a distributed chain, hands on.</span></a></li>
+                <li><a href="/password-generator/" class="block h-full p-4 bg-white border border-slate-200 rounded-md hover:border-slate-900 transition"><span class="block font-serif text-2xl leading-tight text-slate-900">Password generator</span><span class="block mt-1 text-sm text-slate-600">Strong random passwords with the length and characters you choose.</span></a></li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="s3k-foot">
+        <div class="s3k-foot-wrap">
+            <div>
+                <p class="s3k-label">say hello</p>
+                <a class="s3k-mail" href="mailto:hello@surikata3k.com">hello@surikata3k.com</a>
+            </div>
+            <p class="s3k-legal">© 2026 Surikata3K · <a href="/">All apps</a> · <a href="https://surikata3k.com/">surikata3k.com</a><br>Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" rel="license noopener" target="_blank">CC BY-NC-SA 4.0</a>. Code on <a href="https://github.com/surikata3k/apps" target="_blank" rel="noopener">GitHub</a>.</p>
+        </div>
+    </footer>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        const PRIMES = [17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+        const E_CANDIDATES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113];
+        const enc = new TextEncoder();
+        const dec = new TextDecoder();
+        const K = {};   // p, q, n, phi, e, d
+
+        // ---------- Arithmetic ----------
+        const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
+        function modpow(b, e, m) {           // every value < n² < 2^27: Number is enough
+            let r = 1; b %= m;
+            while (e > 0) { if (e & 1) r = (r * b) % m; b = (b * b) % m; e >>= 1; }
+            return r;
+        }
+        function modinv(a, m) {
+            let [r0, r1, s0, s1] = [m, a, 0, 1];
+            while (r1) { const q = Math.floor(r0 / r1);[r0, r1] = [r1, r0 - q * r1];[s0, s1] = [s1, s0 - q * s1]; }
+            return ((s0 % m) + m) % m;
+        }
+        // Toy digest: polynomial modulo n (a real one would be SHA-256)
+        function toyHash(str, n) { let h = 7; for (const b of enc.encode(str)) h = (h * 31 + b) % n; return h; }
+        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const show = ch => ch === ' ' ? '␣' : esc(ch);
+
+        // ---------- 1. Keys ----------
+        function fillSelect(sel, values, current) {
+            sel.innerHTML = values.map(v => `<option value="${v}"${v === current ? ' selected' : ''}>${v}</option>`).join('');
+        }
+        function validEs(phi) { return E_CANDIDATES.filter(e => e < phi && gcd(e, phi) === 1); }
+
+        function computeKeys() {
+            const p = +$('selP').value, q = +$('selQ').value;
+            $('pqWarn').classList.toggle('hidden', p !== q);
+            if (p === q) return false;
+            const n = p * q, phi = (p - 1) * (q - 1);
+            const es = validEs(phi);
+            let e = +$('selE').value;
+            if (!es.includes(e)) e = es.includes(17) ? 17 : es[0];
+            fillSelect($('selE'), es, e);
+            const d = modinv(e, phi);
+            Object.assign(K, { p, q, n, phi, e, d });
+            renderKeys();
+            return true;
+        }
+
+        function renderKeys() {
+            const { p, q, n, phi, e, d } = K;
+            const k = (e * d - 1) / phi;
+            const step = (i, title, body) => `<li class="flex gap-3"><span class="w-6 h-6 shrink-0 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-xs font-bold">${i}</span><div><div class="font-semibold text-slate-800">${title}</div><div class="font-mono text-slate-600 mt-0.5">${body}</div></div></li>`;
+            $('keySteps').innerHTML =
+                step(1, 'Modulus n (public)', `n = p · q = ${p} · ${q} = <strong class="text-slate-900">${n}</strong>`) +
+                step(2, 'Euler’s totient φ (secret)', `φ(n) = (p−1)(q−1) = ${p - 1} · ${q - 1} = <strong class="text-slate-900">${phi}</strong>`) +
+                step(3, 'Public exponent e', `mcd(${e}, ${phi}) = 1 &nbsp;→&nbsp; e = <strong class="text-emerald-700">${e}</strong>`) +
+                step(4, 'Private exponent d', `d tal que e · d ≡ 1 (mod φ) &nbsp;→&nbsp; d = <strong class="text-rose-700">${d}</strong>`) +
+                step(5, 'Check', `${e} · ${d} = ${e * d} = ${k} · ${phi} + 1 ✓`);
+            $('pubKey').textContent = `(e, n) = (${e}, ${n})`;
+            $('privKey').textContent = `(d, n) = (${d}, ${n})`;
+            $('evaKnows').innerHTML = `<i data-lucide="lock-open" class="w-3 h-3"></i>e = ${e}, n = ${n}`;
+            const bits = Math.ceil(Math.log2(n + 1));
+            $('toyBits').textContent = `${bits} bits`;
+            $('toyDigits').textContent = String(n).length;
+            $('factorLog').textContent = '// Press “Factor n” to see the attack...';
+            renderEncrypt(); renderSign();
+            lucide.createIcons();
+        }
+
+        function randomKeys() {
+            const pick = () => PRIMES[Math.floor(Math.random() * PRIMES.length)];
+            let p = pick(), q = pick();
+            while (q === p) q = pick();
+            $('selP').value = p; $('selQ').value = q;
+            const es = validEs((p - 1) * (q - 1));
+            fillSelect($('selE'), es, es[Math.floor(Math.random() * Math.min(es.length, 8))]);
+            computeKeys();
+        }
+
+        // ---------- 2. Encrypt ----------
+        function renderEncrypt() {
+            const { n, e, d } = K;
+            const bytes = [...enc.encode($('msgIn').value)];
+            const c = bytes.map(m => modpow(m, e, n));
+            const eva = c.map(x => modpow(x, e, n));
+            const back = c.map(x => modpow(x, d, n));
+            $('cipherStrip').innerHTML = c.length ? c.map(x => `<span>${x}</span>`).join('') : '<span class="text-slate-400">—</span>';
+            // Eva's values are not valid bytes: show them as arbitrary printable characters
+            $('evaText').textContent = eva.map(v => String.fromCharCode(33 + (v % 94))).join('') || '—';
+            $('bielText').textContent = dec.decode(new Uint8Array(back)) || '—';
+            // Table: one character may take several bytes (UTF-8)
+            const chars = [...$('msgIn').value];
+            let i = 0, rows = '';
+            for (const ch of chars) {
+                const len = enc.encode(ch).length;
+                for (let j = 0; j < len; j++, i++) {
+                    rows += `<tr>
+                        <td class="px-4 py-1.5">${j === 0 ? show(ch) : '<span class="text-slate-300">↳</span>'}</td>
+                        <td class="px-4 py-1.5 text-right">${bytes[i]}</td>
+                        <td class="px-4 py-1.5 text-right text-emerald-700 font-semibold">${c[i]}</td>
+                        <td class="px-4 py-1.5 text-right text-amber-700">${eva[i]}</td>
+                        <td class="px-4 py-1.5 text-right text-rose-700">${back[i]}</td></tr>`;
+                }
+            }
+            $('byteRows').innerHTML = rows;
+        }
+
+        function animateSend() {
+            const pk = $('packet');
+            pk.classList.remove('packet'); void pk.offsetWidth; pk.classList.add('packet');
+            renderEncrypt();
+        }
+
+        // ---------- 3. Sign ----------
+        let signTouched = false;
+        function renderSign() {
+            const { n, e, d } = K;
+            const orig = $('signIn').value;
+            if (!signTouched) $('signRecv').value = orig;
+            const recv = $('signRecv').value;
+            const h = toyHash(orig, n);
+            const s = modpow(h, d, n);
+            const h2 = toyHash(recv, n);
+            const v = modpow(s, e, n);
+            $('hOrig').textContent = `h = ${h}`;
+            $('sigCalc').innerHTML = `s = h<sup>d</sup> mod n = ${h}<sup>${d}</sup> mod ${n} = <strong class="text-rose-700">${s}</strong>`;
+            $('sigVal').innerHTML = `<i data-lucide="pen-line" class="w-3 h-3"></i>s = ${s}`;
+            $('hRecv').textContent = `h' = ${h2}`;
+            $('verCalc').innerHTML = `s<sup>e</sup> mod n = ${s}<sup>${e}</sup> mod ${n} = <strong class="text-emerald-700">${v}</strong>`;
+            const ok = v === h2;
+            const same = recv === orig;
+            const box = $('verdict');
+            box.className = 'rounded-xl border-2 p-4 flex gap-3 items-start ' + (ok ? 'border-emerald-300 bg-emerald-50 text-emerald-900' : 'border-rose-300 bg-rose-50 text-rose-900');
+            box.innerHTML = ok
+                ? `<i data-lucide="circle-check" class="w-6 h-6 shrink-0 text-emerald-600"></i><div><div class="font-semibold">Valid signature (${v} = ${h2})</div><div class="text-sm mt-0.5">${same ? 'The message is from Biel and nobody has modified it.' : 'Coincidence: the toy digest matched (a collision). This would not happen with SHA-256.'}</div></div>`
+                : `<i data-lucide="circle-x" class="w-6 h-6 shrink-0 text-rose-600"></i><div><div class="font-semibold">INVALID signature (${v} ≠ ${h2})</div><div class="text-sm mt-0.5">The message was modified on the way. Eve can’t create a new signature because she doesn’t have Biel’s private key.</div></div>`;
+            lucide.createIcons();
+        }
+
+        // ---------- 4. Break ----------
+        function factorAttack() {
+            const { n, e } = K;
+            const t0 = performance.now();
+            let tries = 0, f = 0;
+            const log = [`$ factor ${n}`];
+            for (let i = 2; i * i <= n; i++) {
+                tries++;
+                if (n % i === 0) { f = i; break; }
+                if (tries <= 6) log.push(`  ${n} / ${i} → remainder ${n % i}`);
+                if (tries === 7) log.push('  ...');
+            }
+            const ms = (performance.now() - t0).toFixed(3);
+            const p = f, q = n / f, phi = (p - 1) * (q - 1), d = modinv(e, phi);
+            log.push(`  ${n} / ${p} → remainder 0  ✔`, '',
+                `Found in ${tries} attempts (${ms} ms):`,
+                `  n = ${p} · ${q}`,
+                `  φ(n) = ${p - 1} · ${q - 1} = ${phi}`,
+                `  d = ${e}⁻¹ mod ${phi} = ${d}`, '',
+                `>> Eve now has the private key (${d}, ${n}).`,
+                `>> With small keys, RSA protects nothing.`);
+            $('factorLog').textContent = log.join('\n');
+        }
+
+        // ---------- Tabs ----------
+        function selectTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
+            document.querySelectorAll('.panel').forEach(p => {
+                const on = p.id === 'panel-' + name;
+                p.classList.toggle('hidden', !on);
+                p.classList.toggle(p.id === 'panel-encrypt' ? 'flex' : 'grid', on);
+            });
+        }
+
+        // ---------- Start ----------
+        fillSelect($('selP'), PRIMES, 61);
+        fillSelect($('selQ'), PRIMES, 53);
+        fillSelect($('selE'), [17], 17);
+        ['selP', 'selQ', 'selE'].forEach(id => $(id).addEventListener('change', computeKeys));
+        $('btnNewKeys').addEventListener('click', randomKeys);
+        $('msgIn').addEventListener('input', renderEncrypt);
+        $('btnSend').addEventListener('click', animateSend);
+        $('signIn').addEventListener('input', () => { signTouched = false; renderSign(); });
+        $('signRecv').addEventListener('input', () => { signTouched = true; renderSign(); });
+        $('btnTamper').addEventListener('click', () => { $('signRecv').value = 'Exam tomorrow.'; signTouched = true; renderSign(); });
+        $('btnRestore').addEventListener('click', () => { signTouched = false; renderSign(); });
+        $('btnFactor').addEventListener('click', factorAttack);
+        document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => selectTab(t.dataset.tab)));
+        computeKeys();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
