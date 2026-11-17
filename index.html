@@ -27,60 +27,75 @@
 <link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "@id": "https://apps.surikata3k.com/#page", "url": "https://apps.surikata3k.com/", "name": "Surikata3K apps", "description": "Free web apps that run entirely in your browser.", "inLanguage": "en", "isPartOf": {"@id": "https://surikata3k.com/#website"}, "author": {"@type": "Person", "name": "Surikata3K", "url": "https://surikata3k.com/", "email": "mailto:hello@surikata3k.com"}, "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en", "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learning outcome hours planner", "url": "https://apps.surikata3k.com/learning-outcome-hours/"}, {"@type": "ListItem", "position": 2, "name": "Dits Màgics", "url": "https://surikata3k.com/ditsmagics/en/"}, {"@type": "ListItem", "position": 3, "name": "PassForge", "url": "https://apps.surikata3k.com/passforge/"}, {"@type": "ListItem", "position": 4, "name": "Password generator", "url": "https://apps.surikata3k.com/password-generator/"}, {"@type": "ListItem", "position": 5, "name": "Password strength checker", "url": "https://apps.surikata3k.com/password-strength-checker/"}, {"@type": "ListItem", "position": 6, "name": "Entropy calculator", "url": "https://apps.surikata3k.com/password-entropy-calculator/"}, {"@type": "ListItem", "position": 7, "name": "Asymmetric key simulator", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/"}, {"@type": "ListItem", "position": 8, "name": "The maths of RSA", "url": "https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html"}, {"@type": "ListItem", "position": 9, "name": "Blockchain simulator", "url": "https://apps.surikata3k.com/blockchain-simulator/"}]}}]}</script>
 <style>
-  :root { --bg: #FBFBF9; --ink: #111111; --muted: #555550; --rule: #D9D8D2; --accent: #B23A0A;
+  :root { --bg: #FBFBF9; --ink: #111111; --muted: #555550; --text-2: #45453F; --rule: #D9D8D2; --card: #FFFFFF; --accent: #B23A0A;
           --serif: 'Instrument Serif', Georgia, serif; --sans: 'IBM Plex Sans', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-  main { max-width: 760px; margin: 0 auto; padding: 64px 20px 8px; }
-  h1 { margin: 0 0 12px; font: 400 clamp(44px, 8vw, 72px)/1 var(--serif); letter-spacing: -0.02em; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 64px); }
+  /* Hero, same as the home page */
+  .hero { padding: 60px 0; display: flex; flex-direction: column; gap: 32px; }
+  h1 { margin: 0; font: 400 clamp(48px, 8vw, 112px)/0.98 var(--serif); letter-spacing: -0.02em; max-width: 1050px; }
   h1 em { color: var(--accent); }
-  .lede { margin: 0 0 48px; color: var(--muted); max-width: 520px; }
-  h2 { margin: 40px 0 0; padding-bottom: 8px; font: 400 13px var(--mono); color: var(--muted); border-bottom: 1px solid var(--ink); }
+  .lede { margin: 0; max-width: 680px; font-size: 19px; color: var(--text-2); }
+  /* Sections: rule on top and a lowercase mono label */
+  .section { border-top: 1px solid var(--ink); padding: 32px 0 clamp(24px, 4vw, 40px); }
+  h2 { margin: 0 0 8px; font: 400 14px var(--mono); color: var(--muted); text-transform: lowercase; }
   ul { list-style: none; margin: 0; padding: 0; }
   li a { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 16px 0; border-bottom: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
-  .n { font: 400 26px/1.15 var(--serif); }
-  .d { grid-column: 1; color: var(--muted); font-size: 15px; }
+  li:last-child a { border-bottom: 0; }
+  .n { font: 400 30px/1.1 var(--serif); }
+  .d { grid-column: 1; color: var(--text-2); font-size: 16px; }
   .a { grid-column: 2; grid-row: 1 / span 2; align-self: center; font: 20px var(--mono); color: var(--accent); transition: transform .15s; }
   li a:hover .n { color: var(--accent); }
   li a:hover .a { transform: translateX(4px); }
   li a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-  @media (prefers-reduced-motion: reduce) { .a { transition: none; } }
+  .s3k-foot { margin-top: 0; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .a { transition: none; } }
 </style>
 </head>
 <body>
 
 <header class="s3k-bar">
   <div class="s3k-wrap">
-    <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="30" height="30"></picture><span>Surikata<em>3K</em></span></a>
+    <a class="s3k-brand" href="https://surikata3k.com/" aria-label="Surikata3K Apps, home"><picture><source srcset="/img/logo_mark-80.webp" type="image/webp"><img src="/img/logo_mark-80.png" alt="" width="40" height="40"></picture><span>Surikata<em>3K</em></span><span class="s3k-sub">Apps</span></a>
     <nav class="s3k-nav" aria-label="Site">
-      <a href="https://docs.surikata3k.com/" target="_blank" rel="noopener">docs</a>
-      <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
-      <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
-      <a href="https://apps.surikata3k.com/">apps</a>
-      <a href="/projects/">projects</a>
-      <a href="mailto:hello@surikata3k.com">contact</a>
-      <a href="https://gist.github.com/surikata3k" target="_blank" rel="noopener">gists</a>   
+        <a href="https://docs.surikata3k.com/" target="_blank" rel="noopener">docs</a>
+        <a href="https://www.youtube.com/@Surikata3K" target="_blank" rel="noopener">youtube</a>
+        <a href="https://github.com/surikata3k/" target="_blank" rel="noopener">github</a>
+        <a href="https://apps.surikata3k.com/">apps</a>
+        <a href="https://surikata3k.com/projects/">projects</a>
+        <a href="mailto:hello@surikata3k.com">contact</a>
+        <a href="https://gist.github.com/surikata3k" target="_blank" rel="noopener">gists</a>
     </nav>
   </div>
 </header>
 
-<main>
+<main class="wrap">
+  <section class="hero">
   <h1>Apps, <em>in your browser</em>.</h1>
   <p class="lede">Small free tools. Nothing to install, no account, and nothing you type leaves your device.</p>
+  </section>
+  <section class="section">
     <h2>classroom</h2>
     <ul>
       <li><a href="/learning-outcome-hours/"><span class="n">Learning outcome hours planner</span><span class="d">Spread each learning outcome’s hours across the school calendar.</span><span class="a" aria-hidden="true">→</span></a></li>
     </ul>
+  </section>
+  <section class="section">
     <h2>passwords</h2>
     <ul>
       <li><a href="/passforge/"><span class="n">PassForge</span><span class="d">A different password for every site from one master key.</span><span class="a" aria-hidden="true">→</span></a></li>
       <li><a href="/password-generator/"><span class="n">Password generator</span><span class="d">Strong random passwords, your length and characters.</span><span class="a" aria-hidden="true">→</span></a></li>
       <li><a href="/password-strength-checker/"><span class="n">Password strength checker</span><span class="d">How strong a password is and how long it would take to crack.</span><span class="a" aria-hidden="true">→</span></a></li>
     </ul>
+  </section>
+  <section class="section">
     <h2>cryptography</h2>
     <ul>
       <li><a href="/blockchain-simulator/"><span class="n">Blockchain simulator</span><span class="d">Hash, mine and break a chain of blocks.</span><span class="a" aria-hidden="true">→</span></a></li>
     </ul>
+  </section>
 </main>
 
 <footer class="s3k-foot">
