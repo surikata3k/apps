@@ -4,7 +4,7 @@ Source of **[apps.surikata3k.com](https://apps.surikata3k.com)**: small web apps
 
 ## The apps
 
-- *tools*: [Learning outcome hours planner](https://apps.surikata3k.com/learning-outcome-hours/) (and [Dits Màgics](https://surikata3k.com/ditsmagics/en/), which lives in its own repository)
+- *tools*: [Learning outcome hours planner](https://apps.surikata3k.com/learning-outcome-hours/)
 - *passwords*: [PassForge](https://apps.surikata3k.com/passforge/), [Password generator](https://apps.surikata3k.com/password-generator/), [Password strength checker](https://apps.surikata3k.com/password-strength-checker/), [Entropy calculator](https://apps.surikata3k.com/password-entropy-calculator/)
 - *cryptography and security*: [Asymmetric key simulator](https://apps.surikata3k.com/asymmetric-key-simulator/) (with [the maths of RSA](https://apps.surikata3k.com/asymmetric-key-simulator/rsa-math.html)), [Blockchain simulator](https://apps.surikata3k.com/blockchain-simulator/)
 
